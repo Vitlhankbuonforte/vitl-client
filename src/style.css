@@ -1,0 +1,171 @@
+@import "../node_modules/primeflex/primeflex.css";
+@import 'primeicons/primeicons.css';
+/* @import "theme.css"; */
+@import "theme-good.css";
+/* @import "primevue/resources/themes/lara-dark-teal/theme.css"; */
+@import "primevue/resources/primevue.min.css";
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #EAEAEA;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #2f2f2f;
+  border-radius: 6px;
+}
+
+
+.p-breadcrumb	{
+  border: 0;
+  background: transparent;
+}
+
+.p-menuitem-text {
+  color: var(--primary-600)!important;
+  text-decoration: underline!important;
+}
+
+.router-link-active-exact .p-menuitem-text {
+  color: white!important;
+  text-decoration: none!important;
+}
+
+@media screen and (max-width: 960px) {
+
+  .p-component {
+    font-size: 0.8rem;
+  }
+}
+/* .p-datatable-thead th:first-child.round {
+  border-top-left-radius: 1rem!important;
+}
+
+.p-datatable-thead th:last-child.round {
+  border-top-right-radius: 1rem!important;
+}
+
+.p-datatable-thead th {
+  background-color: var(--gray-50)!important;
+  color: var(--gray-900)!important;
+}
+
+
+.p-datatable-tfoot td:first-child {
+  border-bottom-left-radius: 1rem!important;
+}
+
+.p-datatable-tfoot td:last-child {
+  border-bottom-right-radius: 1rem!important;
+}
+
+.p-datatable-tfoot td {
+  background-color: var(--gray-50)!important;
+  color: var(--gray-900)!important;
+} */
+
+.bg-gold {
+  background-color: rgb(255 207 36);
+}
+
+.bg-silver {
+  background-color: rgb(192 192 192);
+}
+
+.bg-bronze {
+  background-color: rgb(243 149 5);
+}
+
+.border-gold {
+  border-color: rgb(255 207 36);
+}
+
+.border-silver {
+  border-color: rgb(192 192 192);
+}
+
+.border-bronze {
+  border-color: rgb(243 149 5);
+}
+
+.card {
+  background: var(--surface-b);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  padding: 2rem;
+}
+
+
+.bg-surface {
+  background: var(--surface-b)!important;
+}
+
+.text-dark {
+  color: var(--surface-b)!important;
+}
+
+.bg-light {
+  background-color: #EAEAEA!important;
+}
+
+.short-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 30vw;
+}
+
+
+.leader-badge {
+  min-width: 2rem;
+  border-width: 6px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.p-datatable .p-column-header-content {
+  justify-content: center;
+}
+
+.p-datatable .text-left .p-column-header-content {
+  justify-content: start;
+}
+
+.p-multiselect-header .p-checkbox.p-component {
+  flex-grow: 1;
+}
+
+.p-multiselect-header .p-checkbox.p-component:after {
+  content: 'Select All';
+  margin-left: 0.5rem;
+}
+
+#logo_image {
+  width: 4%;
+}
+
+.p-datatable-thead tr:first-child th:first-child {
+  border-top-left-radius: 6px;
+}
+
+.p-datatable-thead tr:last-child th:last-child {
+  border-top-right-radius: 6px;
+}
+
+.p-datatable-tfoot tr td:last-child {
+  border-bottom-right-radius: 6px;
+} 
+
+.p-datatable-tfoot tr td:first-child {
+  border-bottom-left-radius: 6px;
+}
