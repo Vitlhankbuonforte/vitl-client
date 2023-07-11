@@ -116,7 +116,6 @@ const {
   allDMs, 
   selectedDMs,
   selectedProduction,
-  allProductions,
   sortBy,
   sortItems,
   viewOption,
