@@ -104,7 +104,7 @@ export const useMainStore = defineStore("store", {
       this.lastBlock = block;
       this.resetSortBy();
       this.loading = true;
-      const params = {
+      const params: any = {
         month: (this.month || [])
           .filter(Boolean)
           .map(
@@ -128,10 +128,6 @@ export const useMainStore = defineStore("store", {
         params,
       });
       const allData = res.data;
-      // const resp = await fetch(
-      //     `${process.env.VITE_API_URL}/fetch?block=${block}&month=${this.month.getFullYear() + '-' + (this.month.getMonth()+1) + '-01'}`
-      // );
-      // const allData = await resp.json();
       this.allData = allData.map((x: any) => {
         return {
           ...x,

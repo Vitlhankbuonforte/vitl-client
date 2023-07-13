@@ -110,7 +110,7 @@ const onRowSelect = (event: any) => {
 };
 
 const highlighted = (field: any, item: any) => {
-    const rules = {
+    const rules: any = {
         SALES_GOAL: 1,
         DM_PERSONAL: 1,
         SG_P: 0.3,
