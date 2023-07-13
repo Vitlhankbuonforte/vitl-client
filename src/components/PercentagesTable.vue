@@ -2,8 +2,13 @@
     <div v-if="loading" class="p-4 flex h-30rem">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
-    <div v-else class="p-0">
-        <DataTable stripedRows :resizable-columns="true" columnResizeMode="expand" class="w-full p-datatable-sm border-round" :scrollable="true"  selectionMode="single" @rowSelect="onRowSelect" :value="data">
+    <div v-else class="p-0 relative">
+        <div class="absolute top-[100px] left-0 z-2">
+            <ToggleButton v-model="highlight" on-label="Highlight" off-label="No Highlight" class="w-10rem" />
+        </div>
+        <DataTable stripedRows :resizable-columns="true" columnResizeMode="expand"
+            class="w-full p-datatable-sm border-round" :scrollable="true" selectionMode="single" @rowSelect="onRowSelect"
+            :value="data">
             <ColumnGroup type="header">
                 <Row>
                     <Column headerStyle="width:3rem;border:0;background:black!important;" :frozen="true" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
@@ -21,14 +26,15 @@
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="30%" />
                     <Column headerClass="text-dark bg-light font-medium" header="75%" />
                     <Column headerClass="text-dark bg-light font-medium" header="25%" />
-                    <Column headerClass="text-dark bg-light font-medium" header="6" />
+                    <Column headerClass="text-dark bg-light font-medium" header="3" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
                 </Row>
                 <Row>
-                    <Column headerClass="text-dark bg-light font-medium" header="Weight" headerStyle="border-bottom-left-radius: 6px"/>
-                    <Column headerClass="text-dark bg-light font-medium" header="30" />
+                    <Column headerClass="text-dark bg-light font-medium" header="Weight"
+                        headerStyle="border-bottom-left-radius: 6px" />
+                    <Column headerClass="text-dark bg-light font-medium" header="35" />
                     <Column headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="5" />
                     <Column headerClass="text-dark bg-light font-medium" header="10" />
@@ -36,32 +42,44 @@
                     <Column headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="10" />
                     <Column headerClass="text-dark bg-light font-medium" header="10" />
-                    <Column headerClass="text-dark bg-light font-medium" header="10" headerStyle="border-bottom-right-radius: 6px" />
+                    <Column headerClass="text-dark bg-light font-medium" header="5"
+                        headerStyle="border-bottom-right-radius: 6px" />
                 </Row>
                 <Row>
-                    <Column headerClass="border-0 p-1" headerStyle="height:0.5rem;background:black!important;" :frozen="true" header="" :colspan="12"/>
+                    <Column headerClass="border-0 p-1" headerStyle="height:0.5rem;background:black!important;"
+                        :frozen="true" header="" :colspan="12" />
                 </Row>
                 <Row>
-                    <Column headerClass="text-dark bg-light font-medium" :frozen="true" header="#" :pt="{ headerCell: { class: 'round' }}" headerStyle="border-top-left-radius: 6px"/>
+                    <Column headerClass="text-dark bg-light font-medium" :frozen="true" header="#"
+                        :pt="{ headerCell: { class: 'round' } }" headerStyle="border-top-left-radius: 6px" />
                     <slot name="header"></slot>
-                    <Column  headerStyle="text-wrap:wrap;" v-for="col of columns" :key="col.field" :header-class="'text-dark bg-light font-medium ' + col.class || ''" :header="col.title">
+                    <Column headerStyle="text-wrap:wrap;" v-for="col of columns" :key="col.field"
+                        :header-class="'text-dark bg-light font-medium ' + col.class || ''" :header="col.title">
                     </Column>
                 </Row>
             </ColumnGroup>
-            
-            <Column headerClass="text-dark bg-light font-medium" :frozen="true" >
+
+            <Column headerClass="text-dark bg-light font-medium" :frozen="true">
                 <template #body="{ index }">
                     {{ index + 1 }}
                 </template>
             </Column>
             <slot name="body"></slot>
-            <Column v-for="col of columns" :key="col.field" :field="col.field">
-                <template #body="slotProps">{{ col.field != 'POINTS' ? (slotProps.data[col.field] ? Math.round(slotProps.data[col.field] * 100)+'%':'N/A') : slotProps.data[col.field] }}</template>
+            <Column v-for="col of columns" :key="col.field" :field="col.field" body-class="p-0">
+                <template #body="slotProps">
+                    <div :class="`py-3 px-2 h-full ${highlight ? highlighted(col.field, slotProps.data[col.field]) : ''}`">
+                        {{
+                            col.field != 'POINTS' ?
+                            (slotProps.data[col.field] ?
+                                Math.round(slotProps.data[col.field] * 100) + '%' : 'N/A') : slotProps.data[col.field] }}</div>
+                </template>
             </Column>
             <ColumnGroup type="footer">
                 <Row>
-                    <Column footerClass="text-dark bg-light font-medium" :frozen="true" footer="Total" :colspan="2" footerStyle="text-align:center;border-bottom-left-radius: 6px" />
-                    <Column footerClass="text-dark bg-light font-medium" v-for="col of columns" :footer="totalCalc(data, col.field)">
+                    <Column footerClass="text-dark bg-light font-medium" :frozen="true" footer="Total" :colspan="2"
+                        footerStyle="text-align:center;border-bottom-left-radius: 6px" />
+                    <Column footerClass="text-dark bg-light font-medium" v-for="col of columns"
+                        :footer="totalCalc(data, col.field)">
                     </Column>
                 </Row>
             </ColumnGroup>
@@ -74,20 +92,35 @@ import { useMainStore } from "../store/mainStore";
 
 
 const totalCalc = (data: any[], field: string) => {
-    if(field == 'POINTS') {
-        return Math.round(data.reduce((p: number, x: any) => p + x[field], 0)/data.length).toString();
+    if (field == 'POINTS') {
+        return Math.round(data.reduce((p: number, x: any) => p + x[field], 0) / data.length).toString();
 
     } else {
-        return Math.round(data.reduce((p: number, x: any) => p + x[field], 0)/data.length * 100) + '%';
+        return Math.round(data.reduce((p: number, x: any) => p + x[field], 0) / data.length * 100) + '%';
     }
 }
 const store = useMainStore();
 const columns = store.percentageColumns;
-const { data, loading } = storeToRefs(store);
+const { data, loading, highlight } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {
     console.log(event);
     emit('rowSelect', event);
 };
+
+const highlighted = (field: any, item: any) => {
+    const rules = {
+        SALES_GOAL: 1,
+        DM_PERSONAL: 1,
+        SG_P: 0.3,
+        PRR_P: 0.75,
+        VAR: 0.25,
+        DM_PERSONAL_INSTALLS: 1,
+        CLEAN_P: 1,
+        RWS_P: 1,
+        NET_PPW_P: 1,
+    }
+    return rules[field] <= item ? 'bg-primary' : '';
+}
 </script>

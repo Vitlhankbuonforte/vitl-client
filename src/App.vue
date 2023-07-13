@@ -7,7 +7,7 @@
       <Button outlined icon="pi pi-sliders-h" @click="store.toggleFilter()"></Button>
     </div>
     <div class="flex md:hidden grow align-items-center">
-      <Button outlined icon="pi pi-bars" @click="sidebarOpen=!sidebarOpen"></Button>
+      <Button outlined icon="pi pi-bars" @click="sidebarOpen = !sidebarOpen"></Button>
     </div>
   </div>
   <transition enter-active-class="transition-duration-300 transition-ease-out"
@@ -16,10 +16,9 @@
     leave-to-class="transition-transform -translate-y-100 opacity-0">
     <div class="hidden md:flex p-5 mb-0 bg-surface border-top-1 border-gray-100" v-if="store.filterActive">
       <div class="flex gap-2 justify-content-left w-full">
-        <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
+        <div class="w-2 p-2 bg-gray-50 border-round flex flex-column picker-container">
           <label class="text-gray-900 mb-1">Month</label>
-          <Calendar v-model="month" selectionMode="single" view="month" dateFormat="mm/yy" :manualInput="false">
-          </Calendar>
+          <Datepicker v-model="month" range month-picker dark :partial-range="true" model-auto :clearable="false" />
         </div>
         <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Regions</label>
@@ -43,9 +42,9 @@
             placeholder="Sort By" />
         </div>
         <div class="w-2 p-2 bg-gray-100 border-round flex flex-column">
-          <label class="text-gray-900 mb-1">Production</label>         
-          <Dropdown v-model="selectedProduction" :options="['All Production','Grind Production']" placeholder="" />
-        </div>      
+          <label class="text-gray-900 mb-1">Production</label>
+          <Dropdown v-model="selectedProduction" :options="['All Production', 'Grind Production']" placeholder="" />
+        </div>
         <!-- <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Production</label>
           <Dropdown v-model="selectedProduction" :option-label="'title'" :option-value="'field'" :options="allProductions"
@@ -56,18 +55,18 @@
   </transition>
   <Sidebar v-model:visible="sidebarOpen">
     <template #header>
-            <div class="flex">
-              <img src="./assets/Logo.svg" alt="" class="mr-8" />
-            </div>
+      <div class="flex">
+        <img src="./assets/Logo.svg" alt="" class="mr-8" />
+      </div>
     </template>
     <div class="flex flex-column grow align-items-center gap-2">
       <Breadcrumb :model="blockLevels" :exact="true" />
-      <SelectButton class="w-full flex" :pt="{ button: { class: 'flex-grow-1'}}" v-model="viewOption" :options="viewOptions" aria-labelledby="basic" />
+      <SelectButton class="w-full flex" :pt="{ button: { class: 'flex-grow-1' } }" v-model="viewOption"
+        :options="viewOptions" aria-labelledby="basic" />
       <div class="w-full flex flex-column gap-2">
-        <div class="w-full p-2 bg-gray-50 border-round flex flex-column">
+        <div class="w-full p-2 bg-gray-50 border-round flex flex-column pick-container">
           <label class="text-gray-900 mb-1">Month</label>
-          <Calendar v-model="month" selectionMode="single" view="month" dateFormat="mm/yy" :manualInput="false">
-          </Calendar>
+          <Datepicker v-model="month" range month-picker dark :partial-range="true" model-auto :clearable="false" />
         </div>
         <div class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Regions</label>
@@ -82,13 +81,17 @@
           <MultiSelect v-model="selectedDistricts" :options="allDistricts" placeholder="(All)" />
         </div>
         <div class="p-2 bg-gray-100 border-round flex flex-column">
-            <label class="text-gray-900 mb-1">DMs</label>         
-            <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)" />
-          </div>      
+          <label class="text-gray-900 mb-1">DMs</label>
+          <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)" />
+        </div>
         <div class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Sort</label>
           <Dropdown v-model="sortBy" :option-label="'title'" :option-value="'field'" :options="sortItems"
             placeholder="Sort By" />
+        </div>
+        <div class="p-2 bg-gray-50 border-round flex flex-column">
+          <label class="text-gray-900 mb-1">Production</label>
+          <Dropdown v-model="selectedProduction" :options="['All Production', 'Grind Production']" placeholder="" />
         </div>
       </div>
     </div>
@@ -100,6 +103,8 @@
 import { ref, watch } from "vue";
 import { useMainStore } from "./store/mainStore";
 import { storeToRefs } from "pinia";
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const store = useMainStore();
 
@@ -113,7 +118,7 @@ const {
   selectedChannels,
   allDistricts,
   selectedDistricts,
-  allDMs, 
+  allDMs,
   selectedDMs,
   selectedProduction,
   sortBy,
@@ -128,7 +133,11 @@ watch(viewOption, () => {
 
 watch(month, () => {
   store.loadData();
-})
+});
+
+watch(selectedProduction, () => {
+  store.loadData();
+});
 
 const blockLevels = [{
   label: 'Regions',

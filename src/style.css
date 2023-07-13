@@ -1,5 +1,5 @@
 @import "../node_modules/primeflex/primeflex.css";
-@import 'primeicons/primeicons.css';
+@import "primeicons/primeicons.css";
 /* @import "theme.css"; */
 @import "theme-good.css";
 /* @import "primevue/resources/themes/lara-dark-teal/theme.css"; */
@@ -16,7 +16,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #EAEAEA;
+  background: #eaeaea;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -24,24 +24,22 @@ body {
   border-radius: 6px;
 }
 
-
-.p-breadcrumb	{
+.p-breadcrumb {
   border: 0;
   background: transparent;
 }
 
 .p-menuitem-text {
-  color: var(--primary-600)!important;
-  text-decoration: underline!important;
+  color: var(--primary-600) !important;
+  text-decoration: underline !important;
 }
 
 .router-link-active-exact .p-menuitem-text {
-  color: white!important;
-  text-decoration: none!important;
+  color: white !important;
+  text-decoration: none !important;
 }
 
 @media screen and (max-width: 960px) {
-
   .p-component {
     font-size: 0.8rem;
   }
@@ -104,17 +102,16 @@ body {
   padding: 2rem;
 }
 
-
 .bg-surface {
-  background: var(--surface-b)!important;
+  background: var(--surface-b) !important;
 }
 
 .text-dark {
-  color: var(--surface-b)!important;
+  color: var(--surface-b) !important;
 }
 
 .bg-light {
-  background-color: #EAEAEA!important;
+  background-color: #eaeaea !important;
 }
 
 .short-text {
@@ -123,7 +120,6 @@ body {
   overflow: hidden;
   max-width: 30vw;
 }
-
 
 .leader-badge {
   min-width: 2rem;
@@ -146,7 +142,7 @@ body {
 }
 
 .p-multiselect-header .p-checkbox.p-component:after {
-  content: 'Select All';
+  content: "Select All";
   margin-left: 0.5rem;
 }
 
@@ -164,8 +160,46 @@ body {
 
 .p-datatable-tfoot tr td:last-child {
   border-bottom-right-radius: 6px;
-} 
+}
 
 .p-datatable-tfoot tr td:first-child {
   border-bottom-left-radius: 6px;
+}
+
+.dp__menu {
+  --dp-input-padding: 0.75rem 30px 6px 12px;
+}
+
+.picker-container .dp__menu.dp__theme_dark, .dp__menu.dp__theme_dark {
+  --dp-background-color: #2f2f2f;
+  --dp-text-color: #ffffff;
+  --dp-hover-color: #97ef1b;
+  --dp-hover-text-color: #ffffff;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #97ef1b;
+  --dp-primary-text-color: #2f2f2f;
+  --dp-secondary-color: #a9a9a9;
+  --dp-border-color: #2d2d2d;
+  --dp-menu-border-color: #2d2d2d;
+  --dp-border-color-hover: #97ef1b;
+  --dp-disabled-color: #737373;
+  --dp-scroll-bar-background: #212121;
+  --dp-scroll-bar-color: #484848;
+  --dp-success-color: #00701a;
+  --dp-success-color-disabled: #428f59;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #e53935;
+  --dp-highlight-color: rgba(0, 92, 178, 0.2);
+}
+
+.dp__input {
+  background-color: #2f2f2f !important;
+  padding-top: 0.6rem !important;
+  padding-bottom: 0.6rem !important;
+  border-radius: 6px !important;
+  padding-right: 12px !important;
+}
+
+.dp__input:hover {
+  border-color: #97ef1b !important;
 }

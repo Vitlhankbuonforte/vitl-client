@@ -6,7 +6,7 @@
         <h2 class="m-0 lg:mb-3">Top 5 Performers</h2>
         <div class="flex lg:flex-column justify-content-start overflow-x-scroll lg:overflow-x-hidden overflow-y-hidden lg:pb-2">
             <div v-for="lead, index of data.slice(0, 5)" class="flex flex-column lg:flex-row m-3 my-2 align-items-center">
-            <div class="relative w-6rem h-6rem lg:w-7rem lg:h-7rem leader-badge border-circle flex align-items-center justify-content-center" :class="borders[index]" :style="`background-image: url(https://vitlgroupb1dd.blob.core.windows.net/vitl-photos/${lead['DM_REP_ID']}.jpg), url(https://vitlgroupb1dd.blob.core.windows.net/vitl-photos/${lead['DM_REP_ID']}.svg);`">
+            <div class="relative w-6rem h-6rem lg:w-7rem lg:h-7rem leader-badge border-circle flex align-items-center justify-content-center" :class="borders[index]" :style="`background-image: url(https://vitlgroupb1dd.blob.core.windows.net/vitl-images-new/team/${lead.DM_REP_ID}.png);`">
                 <span class="absolute bottom-0 py-1 px-2 text-sm border-circle" :class="backgrounds[index]" style="margin-bottom: -0.75rem;"> {{  index+1 }}</span>
             </div>
             <div class="mt-3 lg:mt-0 lg:ml-3">
