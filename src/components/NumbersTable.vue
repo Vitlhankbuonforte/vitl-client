@@ -1,8 +1,11 @@
 <template>
-    <div v-if="loading" class="p-4 flex h-30rem">
+    <div v-if="loading" class="flex h-30rem">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
-    <div v-else class="p-0">
+    <div v-else-if="pulseView">
+        <GridTable :columns="columns" />
+    </div>
+    <div v-else>
         <DataTable stripedRows class="w-full p-datatable-sm" :scrollable="true" selectionMode="single" @rowSelect="onRowSelect" :value="data">
             <Column headerClass="w-3rem text-dark bg-light font-medium" :frozen="true" header="#" :pt="{ headerCell: { class: 'round' }}">
                 <template #body="{ index }">
@@ -31,7 +34,7 @@ const totalCalc = (data: any[], field: string) => {
 }
 const store = useMainStore();
 const columns = store.numberColumns;
-const { data, loading } = storeToRefs(store);
+const { data, loading, pulseView } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {

@@ -1,18 +1,18 @@
 <template>
-    <div v-if="loading" class="p-4 flex h-30rem">
+    <div v-if="loading" class="flex h-30rem">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
-    <div v-else class="p-0 relative">
-        <div class="absolute top-[100px] left-0 z-2">
-            <ToggleButton v-model="highlight" on-label="Highlight" off-label="No Highlight" class="w-10rem" />
-        </div>
+    <div v-else-if="pulseView">
+        <GridTable :columns="columns" />
+    </div>
+    <div v-else class="relative">
         <DataTable stripedRows :resizable-columns="true" columnResizeMode="expand"
             class="w-full p-datatable-sm border-round" :scrollable="true" selectionMode="single" @rowSelect="onRowSelect"
             :value="data">
             <ColumnGroup type="header">
                 <Row>
-                    <Column headerStyle="width:3rem;border:0;background:black!important;" :frozen="true" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
-                    <Column headerStyle="margin-left:-2px;border:0;background:black!important;" :frozen="true" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
+                    <Column headerStyle="width:3rem;border:0;background:black!important;" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
+                    <Column headerStyle="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
                 </Row>
                 <Row>
                     <Column headerClass="text-dark bg-primary font-bold " header="Sales Execution" :colspan="4" headerStyle="text-align:center;border-top-left-radius:6px"/>
@@ -26,7 +26,7 @@
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="30%" />
                     <Column headerClass="text-dark bg-light font-medium" header="75%" />
                     <Column headerClass="text-dark bg-light font-medium" header="25%" />
-                    <Column headerClass="text-dark bg-light font-medium" header="3" />
+                    <Column headerClass="text-dark bg-light font-medium" header="6" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
@@ -101,7 +101,7 @@ const totalCalc = (data: any[], field: string) => {
 }
 const store = useMainStore();
 const columns = store.percentageColumns;
-const { data, loading, highlight } = storeToRefs(store);
+const { data, loading, highlight, pulseView } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {

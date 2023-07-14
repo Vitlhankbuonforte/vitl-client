@@ -8,7 +8,7 @@
             </template>
         </Column>
     </NumbersTable>
-    <PercentagesTable class="lg:m-3" v-else>
+    <PercentagesTable class="p-2 lg:m-3" v-else>
         <template v-slot:header>
             <Column headerClass="text-left text-dark bg-light font-medium" :frozen="true" :header="'Rep'" :rowspan="5">
             </Column>

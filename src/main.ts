@@ -5,6 +5,7 @@ import Leaderboard from "./components/Leaderboard.vue";
 import NumbersTable from "./components/NumbersTable.vue";
 import PercentagesTable from "./components/PercentagesTable.vue";
 import SmallBadge from "./components/SmallBadge.vue";
+import GridTable from "./components/GridTable.vue";
 import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
 import router from "./router";
@@ -25,6 +26,7 @@ import Sidebar from "primevue/sidebar";
 import Button from "primevue/button";
 import Menu from "primevue/menu";
 import ToggleButton from "primevue/togglebutton";
+import { AgGridVue } from "ag-grid-vue3";
 
 const app = createApp(App);
 
@@ -47,10 +49,12 @@ app.component("Row", Row);
 app.component("Avatar", Avatar);
 app.component("SmallBadge", SmallBadge);
 app.component("ToggleButton", ToggleButton);
+app.component("AgGridVue", AgGridVue);
 
 app.component("Leaderboard", Leaderboard);
 app.component("NumbersTable", NumbersTable);
 app.component("PercentagesTable", PercentagesTable);
+app.component("GridTable", GridTable);
 
 app.use(createPinia());
 app.use(router);
