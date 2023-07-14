@@ -51,7 +51,7 @@
   <div class="flex mt-3 justify-content-end mx-2 lg:mx-4 mb-1 gap-1">
     <ToggleButton v-if="viewOption === 'Percentages'" v-model="highlight" on-label="Highlight" off-label="No Highlight"
       class="w-full md:w-10rem" />
-    <ToggleButton outlined class="w-full md:w-10rem" v-model="pulseView" on-label="Pulse View" off-label="Pulse View"></ToggleButton>
+    <ToggleButton v-if="lastBlock === 'District'" outlined class="w-full md:w-10rem" v-model="pulseView" on-label="Pulse View" off-label="Pulse View"></ToggleButton>
   </div>
   <Sidebar v-model:visible="sidebarOpen">
     <template #header>
@@ -127,6 +127,7 @@ const {
   viewOptions,
   pulseView,
   highlight,
+  lastBlock,
 } = storeToRefs(store);
 
 watch(viewOption, () => {

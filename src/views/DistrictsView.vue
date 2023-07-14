@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-column xl:flex-row align-items-stretch">
-        <Leaderboard class="m-2" />
+        <Leaderboard class="m-2 lg:m-4 mb-0" />
         <NumbersTable @rowSelect="onRowSelect"
             class="p-2 lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis"
             v-if="store.viewOption == 'Numbers'">

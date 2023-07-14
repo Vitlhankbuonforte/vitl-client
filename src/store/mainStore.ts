@@ -104,6 +104,10 @@ export const useMainStore = defineStore("store", {
         block = this.lastBlock;
       }
       this.lastBlock = block;
+
+      if (this.lastBlock !== "District") {
+        this.pulseView = false;
+      }
       this.resetSortBy();
 
       this.loading = true;
