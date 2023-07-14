@@ -1,8 +1,8 @@
 <template>
-    <div class="w-full flex flex-column lg:flex-row align-items-stretch">
-        <Leaderboard class="my-2 lg:m-3 mr-0"></Leaderboard>
+    <div class="w-full flex flex-column xl:flex-row align-items-stretch">
+        <Leaderboard class="m-2" />
         <NumbersTable @rowSelect="onRowSelect"
-            class="lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis"
+            class="p-2 lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis"
             v-if="store.viewOption == 'Numbers'">
             <Column bodyClass="text-left" headerClass="text-left text-dark bg-light font-medium" :frozen="true"
                 :field="'DISTRICT'" :header="'District'">
@@ -13,7 +13,7 @@
             </Column>
         </NumbersTable>
         <PercentagesTable @rowSelect="onRowSelect"
-            class="lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis" v-else>
+            class="p-2 lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis" v-else>
             <template v-slot:header>
                 <Column headerClass="text-left text-dark bg-light font-medium" :headerStyle="'width:8%'" :frozen="true"
                     :header="'District'" :rowspan="5"></Column>

@@ -2,17 +2,14 @@
     <div v-if="loading" class="p-4 flex h-30rem">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
-    <div style="width: 100%; flex: 1 1 auto;">
+    <div style="width: 100%; overflow-x: auto;">
 
         <table style="width: 100%;" class="pulse-grid">
             <thead v-if="viewOption === 'Percentages'">
                 <tr>
-                    <th style="width:3rem;border:0;background:black!important;" header="" :rowspan="4"
-                        :pt="{ headerCell: { class: 'round' } }" />
-                    <th style="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4"
-                        :pt="{ headerCell: { class: 'round' } }" />
-                    <th style="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4"
-                        :pt="{ headerCell: { class: 'round' } }" />
+                    <th style="width:3rem;border:0;background:black!important;" header="" :rowspan="4" />
+                    <th style="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4" />
+                    <th style="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4" />
                 </tr>
                 <tr>
                     <th class="text-dark bg-primary font-bold " :colspan="4"
@@ -21,7 +18,7 @@
                     </th>
 
                     <th class="text-dark bg-primary font-bold" :colspan="4">Install Quality</th>
-                    <th class="text-dark bg-primary font-bold" :colspan="2" :pt="{ headerCell: { class: 'round' } }"
+                    <th class="text-dark bg-primary font-bold" :colspan="2"
                         style="text-align:center;border-top-right-radius:6px">Team Development</th>
                 </tr>
                 <tr>
@@ -55,8 +52,8 @@
             </thead>
             <thead>
                 <tr>
-                    <th class="px-3">#</th>
-                    <th class="text-left">
+                    <th class="px-3 left-0 z-2">#</th>
+                    <th class="text-left z-2" style="left: 40px">
                         {{ lastBlock }}
                     </th>
                     <th>
@@ -68,10 +65,10 @@
                 <tr></tr>
             </thead>
             <tr v-for="(row, index) in rows" @mouseenter="() => onMouseEnter(index)" @mouseleave="() => onMouseLeave()">
-                <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)">
+                <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="left-0 z-2">
                     {{ Math.floor(index / 3) + 1 }}
                 </td>
-                <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)">
+                <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="z-2" style="left: 40px">
                     <SmallBadge v-if="lastBlock === 'Rep'" :id="row['REP_ID']" :text="row['REP_NAME']"
                         v-tooltip="row['REP_NAME']" class="short-text" category="rep"
                         :alt="row['REP_NAME'].split(' ').pop().substring(0, 2)" />
@@ -95,7 +92,7 @@
                 </td>
             </tr>
             <tr>
-                <th class="text-dark font-medium" :colspan="2" footerStyle="text-align:center">
+                <th class="text-dark font-medium left-0 z-2" :colspan="2" footerStyle="text-align:center">
                     Total
                 </th>
                 <th>{{ totalCalc(columns[0].field)?.toString() }}</th>
@@ -198,6 +195,12 @@ const highlighted = (field: any, item: any) => {
     position: relative;
     overflow-x: auto;
 
+    @media screen and (max-width: 960px) {
+        th, td {
+            font-size: 0.8rem;
+        }
+    }
+
     th,
     td {
         overflow: hidden;
@@ -206,6 +209,7 @@ const highlighted = (field: any, item: any) => {
         text-align: center;
         border-color: #ccc;
         position: sticky;
+        z-index: 1;
     }
 
     td {
