@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import moment from "moment";
 import { PULSE_MONTHS } from "../consts";
 
 export const useMainStore = defineStore("store", {
@@ -320,9 +321,8 @@ export const useMainStore = defineStore("store", {
         this.allData = [...Array(r.length * 3)].map((_, index) => {
           const month = PULSE_MONTHS[index % 3];
           const item = r[Math.floor(index / 3)];
-          return { ...item[month], ...item.info };
+          return { ...item[month], ...item.info, MONTH: moment(item[month].MONTH).format('MMM yyyy') };
         });
-        console.log(this.allData);
       }
 
       this.loading = false;

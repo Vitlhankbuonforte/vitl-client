@@ -1,1 +1,1 @@
-export const PULSE_MONTHS = ["2022-07-01", "2022-08-01", "2022-09-01"];
+export const PULSE_MONTHS = ["2023-07-01", "2023-08-01", "2023-09-01"];
