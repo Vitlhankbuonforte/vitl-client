@@ -71,7 +71,7 @@
                         {{
                             col.field != 'POINTS' ?
                             (slotProps.data[col.field] ?
-                                Math.round(slotProps.data[col.field] * 100) + '%' : 'N/A') : slotProps.data[col.field] }}</div>
+                                Math.round(slotProps.data[col.field] * 100) + '%' : '0') : slotProps.data[col.field] }}</div>
                 </template>
             </Column>
             <ColumnGroup type="footer">

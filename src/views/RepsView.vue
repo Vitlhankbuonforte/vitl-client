@@ -5,7 +5,7 @@
             <template #body="slotProps">
                 <SmallBadge :id="slotProps.data['REP_ID']" :text="slotProps.data['REP_NAME']"
                     v-tooltip="slotProps.data['REP_NAME']" class="short-text" category="rep"
-                    :alt="slotProps.data['REP_NAME'].split(' ').pop().substring(0, 2)" />
+                    :alt="slotProps.data['REP_NAME']?.split(' ').pop().substring(0, 2) || ''" />
             </template>
         </Column>
     </NumbersTable>

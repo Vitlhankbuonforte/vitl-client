@@ -82,7 +82,7 @@
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)">
                     {{ row.POINTS || (row.SALES ?
-                        Math.round(row.SALES * 100) + '%' : 'N/A') }}</td>
+                        Math.round(row.SALES * 100) + '%' : '0') }}</td>
                 <td :style="cellStyle(false, index)">
                     {{ row.MONTH }}</td>
                 <td v-for="col in agColumns" :key="col.field" :style="cellStyle(false, index, row, col)">
@@ -156,7 +156,7 @@ const onHover = (span: boolean, index: number) => {
 const getValue = (row: any, col: any) => {
     return viewOption.value === 'Percentages' ? col.field != 'POINTS' ?
         (row[col.field] ?
-            Math.round(row[col.field] * 100) + '%' : 'N/A') : row[col.field] : Math.round(row[col.field] || 0)
+            Math.round(row[col.field] * 100) + '%' : '0') : row[col.field] : Math.round(row[col.field] || 0)
 }
 
 const totalCalc = (field: string) => {
