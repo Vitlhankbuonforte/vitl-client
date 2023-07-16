@@ -4,12 +4,14 @@
     </div>
     <div v-else class="card p-3 xl:p-5">
         <h2 class="m-0 mb-2 xl:mb-3">Top 5 Performers</h2>
-        <div
-            class="grid lg:pb-2 flex-row xl:flex-column overflow-x-auto xl:overflow-x-hidden flex-nowrap xl:flex-wrap">
-            <div v-for="lead, index of topPerformers" class="col xl:col-12 flex flex-column flex-auto xl:flex-row m-3 my-2 align-items-center">
+        <div class="grid lg:pb-2 flex-row xl:flex-column overflow-x-auto xl:overflow-x-hidden flex-nowrap xl:flex-wrap">
+            <div v-for="lead, index of topPerformers"
+                class="col xl:col-12 flex flex-column flex-auto xl:flex-row m-3 my-2 align-items-center z-0">
                 <div class="relative w-6rem h-6rem lg:w-7rem lg:h-7rem leader-badge border-circle flex align-items-center justify-content-center"
                     :class="borders[index]"
                     :style="`background-image: url(https://vitlgroupb1dd.blob.core.windows.net/vitl-images-new/team/${lead.DM_REP_ID}.png);`">
+                    <Avatar :label="lead['DISTRICT'].split(' ').pop().substring(0, 2)" class="w-full h-full text-2xl"
+                        style="background-color:#9c27b0; color: #ffffff; z-index: -1; position: relative;" shape="circle" />
                     <span class="absolute bottom-0 py-1 px-2 text-sm border-circle" :class="backgrounds[index]"
                         style="margin-bottom: -0.75rem;"> {{ index + 1 }}</span>
                 </div>

@@ -26,7 +26,7 @@
                     <th class="text-dark bg-light font-medium border-bottom-1">3/rep</th>
                     <th class="text-dark bg-light font-medium border-bottom-1">10</th>
                     <th class="border-right-1 text-dark bg-light font-medium border-bottom-1">30%</th>
-                    <th class="text-dark bg-light font-medium border-bottom-1">75%</th>
+                    <th class="text-dark bg-light font-medium border-bottom-1">60%</th>
                     <th class="text-dark bg-light font-medium border-bottom-1">25%</th>
                     <th class="text-dark bg-light font-medium border-bottom-1">6</th>
                     <th class="border-right-1 text-dark bg-light font-medium border-bottom-1">100%</th>
@@ -69,16 +69,16 @@
                     {{ Math.floor(index / 3) + 1 }}
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="z-2" style="left: 40px">
-                    <SmallBadge v-if="lastBlock === 'Rep'" :id="row['REP_ID']" :text="row['REP_NAME']"
+                    <!-- <SmallBadge v-if="lastBlock === 'Rep'" :id="row['REP_ID']" :text="row['REP_NAME']"
                         v-tooltip="row['REP_NAME']" class="short-text" category="rep"
                         :alt="row['REP_NAME'].split(' ').pop().substring(0, 2)" />
                     <div v-else-if="lastBlock === 'Region'" class="text-left font-medium">
                         <Avatar :label="row['REGION'].substr(2, 2)" class="mr-2"
                             style="background-color:#9c27b0; color: #ffffff" shape="circle" />
                         <span class="short-text">{{ row['REGION'] }}</span>
-                    </div>
-                    <SmallBadge v-else :id="row['DM_REP_ID']" :text="row['DISTRICT']" category="team"
-                        v-tooltip="row['DISTRICT']" class="short-text" />
+                    </div> -->
+                    <SmallBadge :id="row['DM_REP_ID']" :text="row['DISTRICT']" category="team" v-tooltip="row['DISTRICT']"
+                        class="short-text" :alt="row['DISTRICT'].split(' ').pop().substring(0, 2)" />
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)">
                     {{ row.POINTS || (row.SALES ?
@@ -196,7 +196,9 @@ const highlighted = (field: any, item: any) => {
     overflow-x: auto;
 
     @media screen and (max-width: 960px) {
-        th, td {
+
+        th,
+        td {
             font-size: 0.8rem;
         }
     }

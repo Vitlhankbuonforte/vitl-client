@@ -8,7 +8,8 @@
                 :field="'DISTRICT'" :header="'District'">
                 <template #body="slotProps">
                     <SmallBadge :id="slotProps.data['DM_REP_ID']" :text="slotProps.data['DISTRICT']" category="team"
-                        v-tooltip="slotProps.data['DISTRICT']" class="short-text" />
+                        v-tooltip="slotProps.data['DISTRICT']" class="short-text"
+                        :alt="slotProps.data['DISTRICT'].split(' ').pop().substring(0, 2)" />
                 </template>
             </Column>
         </NumbersTable>
@@ -22,7 +23,8 @@
                 <Column bodyClass="text-left" :headerStyle="'width:8%'" :frozen="true" :field="'DISTRICT'">
                     <template #body="slotProps">
                         <SmallBadge :id="slotProps.data['DM_REP_ID']" :text="slotProps.data['DISTRICT']"
-                            v-tooltip="slotProps.data['DISTRICT']" class="short-text" category="team" />
+                            v-tooltip="slotProps.data['DISTRICT']" class="short-text" category="team"
+                            :alt="slotProps.data['DISTRICT'].split(' ').pop().substring(0, 2)" />
                     </template>
                 </Column>
             </template>

@@ -201,7 +201,7 @@ export const useMainStore = defineStore("store", {
             : ((x["SG_P"] - 0.1) / 0.2) * 5;
 
         points +=
-          x["PRR_P"] >= 0.75
+          x["PRR_P"] >= 0.6
             ? 10
             : x["PRR_P"] <= 0.5
             ? 0
