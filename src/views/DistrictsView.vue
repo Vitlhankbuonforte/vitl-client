@@ -38,6 +38,8 @@ import SmallBadge from "../components/SmallBadge.vue";
 import router from "../router";
 import { useMainStore } from "../store/mainStore";
 const store = useMainStore();
+
+store.resetFilter('District')
 store.loadData("District");
 
 const onRowSelect = (event: any) => {

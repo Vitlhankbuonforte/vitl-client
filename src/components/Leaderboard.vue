@@ -32,7 +32,7 @@ const borders = ['border-gold border-solid', 'border-silver border-solid', 'bord
 const backgrounds = ['bg-gold', 'bg-silver', 'bg-bronze', 'bg-gray-600', 'bg-gray-600'];
 
 const store = useMainStore();
-const { data, loading, sortBy, viewOption, pulseView } = storeToRefs(store);
+const { data, pulseData, loading, sortBy, viewOption, pulseView } = storeToRefs(store);
 const renderScore = (lead: any) => {
     if (viewOption.value == 'Numbers' || sortBy.value == "POINTS") {
         return Math.round(lead[sortBy.value] || 0).toString();
@@ -45,7 +45,7 @@ const topPerformers = computed(() => {
         const performers = [];
 
         for (let i = 0; i < 15; i += 3) {
-            if (data.value[i]) { performers.push(data.value[i]); }
+            if (pulseData.value[i]) { performers.push(pulseData.value[i]); }
 
         }
         return performers;

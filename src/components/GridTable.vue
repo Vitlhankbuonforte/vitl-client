@@ -2,8 +2,7 @@
     <div v-if="loading" class="p-4 flex h-30rem">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
-    <div style="width: 100%; overflow-x: auto;">
-
+    <div style="width: 100%; overflow-x: auto;" class="pb-2">
         <table style="width: 100%;" class="pulse-grid">
             <thead v-if="viewOption === 'Percentages'">
                 <tr>
@@ -91,18 +90,7 @@
                     </div>
                 </td>
             </tr>
-            <tr>
-                <th class="text-dark font-medium left-0 z-2" :colspan="2" footerStyle="text-align:center">
-                    Total
-                </th>
-                <th>{{ totalCalc(columns[0].field)?.toString() }}</th>
-                <th></th>
-                <th class="text-dark font-medium" v-for="col of columns.slice(1)">{{ totalCalc(col.field)?.toString()
-                }}</th>
-            </tr>
         </table>
-        <!-- <AgGridVue class="ag-theme-alpine" style="width: 100%; height: 100%;" domLayout="autoHeight" :columnDefs="agColumns"
-            :rowData="data"></AgGridVue> -->
     </div>
 </template>
 <script setup lang="ts">
@@ -110,9 +98,8 @@ import { storeToRefs } from "pinia";
 import { useMainStore } from "../store/mainStore";
 import { computed, ref } from "vue";
 
-
 const store = useMainStore();
-const { data: rows, loading, lastBlock, viewOption, highlight } = storeToRefs(store);
+const { pulseData: rows, loading, lastBlock, viewOption, highlight } = storeToRefs(store);
 
 interface Props {
     columns: any[];
@@ -157,18 +144,6 @@ const getValue = (row: any, col: any) => {
     return viewOption.value === 'Percentages' ? col.field != 'POINTS' ?
         (row[col.field] ?
             Math.round(row[col.field] * 100) + '%' : '0') : row[col.field] : Math.round(row[col.field] || 0)
-}
-
-const totalCalc = (field: string) => {
-    if (viewOption.value === 'Numbers') {
-        return Math.round(rows.value.reduce((p: number, x: any) => p + (x[field] || 0), 0));
-    }
-    if (field == 'POINTS') {
-        return Math.round(rows.value.reduce((p: number, x: any) => p + (x[field] || 0), 0) / rows.value.length).toString();
-
-    } else {
-        return Math.round(rows.value.reduce((p: number, x: any) => p + (x[field] || 0), 0) / rows.value.length * 100) + '%';
-    }
 }
 
 const highlighted = (field: any, item: any) => {
@@ -237,7 +212,6 @@ const highlighted = (field: any, item: any) => {
     }
 
     tr:first-child {
-
         th:first-child {
             border-top-left-radius: 8px;
         }
@@ -248,7 +222,6 @@ const highlighted = (field: any, item: any) => {
     }
 
     tr:last-child {
-
         th:first-child {
             border-bottom-left-radius: 8px;
         }

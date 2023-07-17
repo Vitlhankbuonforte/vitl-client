@@ -4,7 +4,7 @@
             :field="'REGION'" :header="'Region'">
             <template #body="slotProps">
                 <div class="flex flex-nowrap align-items-center">
-                    <Avatar :label="slotProps.data['REGION'].substr(2, 2)" class="mr-2"
+                    <Avatar :label="slotProps.data['REGION'].split(' ').pop().substr(0, 2)" class="mr-2"
                         style="background-color:#9c27b0; color: #ffffff" shape="circle" />
                     <span class="short-text">{{ slotProps.data['REGION'] }}</span>
                 </div>
@@ -19,7 +19,7 @@
         <template v-slot:body>
             <Column bodyClass="text-left" :frozen="true" :field="'REGION'">
                 <template #body="slotProps">
-                    <Avatar :label="slotProps.data['REGION'].substr(2, 2)" class="mr-2"
+                    <Avatar :label="slotProps.data['REGION'].split(' ').pop().substr(0, 2)" class="mr-2"
                         style="background-color:#9c27b0; color: #ffffff" shape="circle" />
                     <span class="short-text">{{ slotProps.data['REGION'] }}</span>
                 </template>
@@ -32,6 +32,8 @@
 import router from "../router";
 import { useMainStore } from "../store/mainStore";
 const store = useMainStore();
+
+store.resetFilter('Region')
 store.loadData("Region");
 
 const onRowSelect = (event: any) => {

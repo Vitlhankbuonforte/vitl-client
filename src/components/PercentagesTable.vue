@@ -11,22 +11,29 @@
             :value="data">
             <ColumnGroup type="header">
                 <Row>
-                    <Column headerStyle="width:3rem;border:0;background:black!important;" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
-                    <Column headerStyle="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4" :pt="{ headerCell: { class: 'round' }}"/>
+                    <Column headerStyle="width:3rem;border:0;background:black!important;" header="" :rowspan="4"
+                        :pt="{ headerCell: { class: 'round' } }" />
+                    <Column headerStyle="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4"
+                        :pt="{ headerCell: { class: 'round' } }" />
                 </Row>
                 <Row>
-                    <Column headerClass="text-dark bg-primary font-bold " header="Sales Execution" :colspan="4" headerStyle="text-align:center;border-top-left-radius:6px"/>
-                    <Column headerClass="text-dark bg-primary font-bold" header="Install Quality" :colspan="4" />
-                    <Column headerClass="text-dark bg-primary font-bold" header="Team Development" :colspan="2" :pt="{ headerCell: { class: 'round' }}" headerStyle="text-align:center;border-top-right-radius:6px"/>
+                    <Column headerClass="text-dark bg-primary font-bold " header="Sales Execution"
+                        :colspan="lastBlock !== 'Rep' ? 4 : 3" headerStyle="text-align:center;border-top-left-radius:6px" />
+                    <Column headerClass="text-dark bg-primary font-bold" header="Install Quality"
+                        :colspan="lastBlock !== 'Rep' ? 4 : 3" />
+                    <Column headerClass="text-dark bg-primary font-bold" header="Team Development" :colspan="2"
+                        :pt="{ headerCell: { class: 'round' } }"
+                        headerStyle="text-align:center;border-top-right-radius:6px" />
                 </Row>
                 <Row>
-                    <Column  headerStyle="text-wrap:wrap;" headerClass="text-dark bg-light font-medium" header="Monthly Goal" />
+                    <Column headerStyle="text-wrap:wrap;" headerClass="text-dark bg-light font-medium"
+                        header="Monthly Goal" />
                     <Column headerClass="text-dark bg-light font-medium" header="3/rep" />
-                    <Column headerClass="text-dark bg-light font-medium" header="10" />
+                    <Column v-if="lastBlock !== 'Rep'" headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="30%" />
                     <Column headerClass="text-dark bg-light font-medium" header="60%" />
                     <Column headerClass="text-dark bg-light font-medium" header="25%" />
-                    <Column headerClass="text-dark bg-light font-medium" header="6" />
+                    <Column v-if="lastBlock !== 'Rep'" headerClass="text-dark bg-light font-medium" header="6" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
@@ -35,11 +42,11 @@
                     <Column headerClass="text-dark bg-light font-medium" header="Weight"
                         headerStyle="border-bottom-left-radius: 6px" />
                     <Column headerClass="text-dark bg-light font-medium" header="35" />
-                    <Column headerClass="text-dark bg-light font-medium" header="10" />
+                    <Column v-if="lastBlock !== 'Rep'" headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="5" />
                     <Column headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="text-dark bg-light font-medium" header="5" />
-                    <Column headerClass="text-dark bg-light font-medium" header="10" />
+                    <Column v-if="lastBlock !== 'Rep'" headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="10" />
                     <Column headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="text-dark bg-light font-medium" header="5"
@@ -74,34 +81,17 @@
                                 Math.round(slotProps.data[col.field] * 100) + '%' : '0') : slotProps.data[col.field] }}</div>
                 </template>
             </Column>
-            <ColumnGroup type="footer">
-                <Row>
-                    <Column footerClass="text-dark bg-light font-medium" :frozen="true" footer="Total" :colspan="2"
-                        footerStyle="text-align:center;border-bottom-left-radius: 6px" />
-                    <Column footerClass="text-dark bg-light font-medium" v-for="col of columns"
-                        :footer="totalCalc(data, col.field)">
-                    </Column>
-                </Row>
-            </ColumnGroup>
         </DataTable>
     </div>
 </template>
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
 import { useMainStore } from "../store/mainStore";
+import { computed } from "vue";
 
-
-const totalCalc = (data: any[], field: string) => {
-    if (field == 'POINTS') {
-        return Math.round(data.reduce((p: number, x: any) => p + x[field], 0) / data.length).toString();
-
-    } else {
-        return Math.round(data.reduce((p: number, x: any) => p + x[field], 0) / data.length * 100) + '%';
-    }
-}
 const store = useMainStore();
-const columns = store.percentageColumns;
-const { data, loading, highlight, pulseView } = storeToRefs(store);
+const cols = store.percentageColumns;
+const { data, loading, highlight, pulseView, lastBlock } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {
@@ -123,4 +113,10 @@ const highlighted = (field: any, item: any) => {
     }
     return rules[field] <= item ? 'bg-primary' : '';
 }
+
+const columns = computed(() =>
+    lastBlock.value === 'Rep' ?
+        cols.filter(col => !['DM_PERSONAL', 'DM_PERSONAL_INSTALLS'].includes(col.field)) :
+        cols
+)
 </script>

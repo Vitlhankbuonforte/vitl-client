@@ -31,6 +31,7 @@ export const useMainStore = defineStore("store", {
     viewOption: "Percentages",
     viewOptions: ["Percentages", "Numbers"],
     highlight: false,
+    allPulseData: [] as any[],
     numberColumns: [
       { field: "SALES", title: "Sales" },
       { field: "GOAL", title: "Goal" },
@@ -59,6 +60,9 @@ export const useMainStore = defineStore("store", {
     ],
   }),
   getters: {
+    pulseData(state): any[] {
+      return generatePulseData(this.data, state);
+    },
     data(state): any[] {
       let data = state.allData;
 
@@ -89,6 +93,15 @@ export const useMainStore = defineStore("store", {
     },
   },
   actions: {
+    resetFilter(level: string) {
+      if (level === "District") {
+        this.selectedDistricts = [];
+      } else if (level === "Region") {
+        this.selectedRegions = [];
+        this.selectedDistricts = [];
+        this.selectedDMs = [];
+      }
+    },
     toggleFilter() {
       this.filterActive = !this.filterActive;
     },
@@ -146,13 +159,21 @@ export const useMainStore = defineStore("store", {
       this.allData = allData.map((x: any) => ({
         ...x,
         SALES_GOAL: x["GOAL"] ? x["SALES"] / x["GOAL"] : 0,
-        DM_PERSONAL: x["PERSONAL_SALES"] ? x["PERSONAL_SALES"] / 10 : 0,
+        DM_PERSONAL:
+          this.lastBlock === "Region"
+            ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
+            : x["PERSONAL_SALES"]
+            ? x["PERSONAL_SALES"] / 10
+            : 0,
         SG_P: x["SALES"] ? x["SG_SALES"] / x["SALES"] : 0,
         PRR_P: x["SALES"] ? x["PRR"] / x["SALES"] : 0,
         VAR: x["SALES"] ? x["VIVINT_SALES"] / x["SALES"] : 0,
-        DM_PERSONAL_INSTALLS: x["PERSONAL_INSTALLS"]
-          ? x["PERSONAL_INSTALLS"] / 6
-          : 0,
+        DM_PERSONAL_INSTALLS:
+          this.lastBlock === "Region"
+            ? x["PERSONAL_INSTALLS"] / x["PERSONAL_INSTALLS_GOAL"]
+            : x["PERSONAL_INSTALLS"]
+            ? x["PERSONAL_INSTALLS"] / 6
+            : 0,
         CLEAN_P: x["SALES"] ? x["CLEAN_SALES"] / x["SALES"] : 0,
         RWS_P: x["ACTIVE_REPS"] ? x["RWS"] / x["ACTIVE_REPS"] : 0,
         NET_PPW_P: x["SUGGESTED_NET_PPW"]
@@ -263,69 +284,69 @@ export const useMainStore = defineStore("store", {
           (value: any, index: number, array: any[]) =>
             value && array.indexOf(value) === index
         );
-
-      if (this.pulseView) {
-        const r: any[] = [];
-        const blockKey: any = {
-          District: "DISTRICT",
-          Region: "REGION",
-          Rep: "REP_ID",
-        }[this.lastBlock];
-
-        for (const item of this.allData) {
-          const existing = r.find((i) => i.info[blockKey] === item[blockKey]);
-
-          if (existing) {
-            if (!existing[item["MONTH"]]) {
-              existing[item["MONTH"]] = item;
-              continue;
-            }
-            for (const col of this.viewOption === "Percentages"
-              ? this.percentageColumns
-              : this.numberColumns) {
-              existing[item["MONTH"]][col.field] += item[col.field];
-            }
-          } else {
-            const newItem: any = {
-              info: {
-                [blockKey]: item[blockKey],
-              },
-              [item["MONTH"]]: item,
-            };
-            item["DM_REP_ID"] &&
-              (newItem.info["DM_REP_ID"] = item["DM_REP_ID"]);
-            item["REP_NAME"] && (newItem.info["REP_NAME"] = item["REP_NAME"]);
-
-            r.push(newItem);
-          }
-        }
-
-        for (const item of r) {
-          item.info["POINTS"] = 0;
-          item.info["SALES"] = 0;
-
-          for (const month of PULSE_MONTHS) {
-            if (!item[month]) {
-              item[month] = {
-                MONTH: month,
-              };
-              continue;
-            }
-            item[month]["POINTS"] &&
-              (item.info["POINTS"] += item[month]["POINTS"]);
-            item[month]["SALES"] &&
-              (item.info["SALES"] += item[month]["SALES"]);
-          }
-        }
-
-        this.allData = [...Array(r.length * 3)].map((_, index) => {
-          const month = PULSE_MONTHS[index % 3];
-          const item = r[Math.floor(index / 3)];
-          return { ...item[month], ...item.info, MONTH: moment(item[month].MONTH).format('MMM yyyy') };
-        });
-      }
-
       this.loading = false;
     },
   },
 });
+
+const generatePulseData = (data: any[], that: any) => {
+  const r: any[] = [];
+  const blockKey: any = {
+    District: "DISTRICT",
+    Region: "REGION",
+    Rep: "REP_ID",
+  }[that.lastBlock as string];
+
+  for (const item of data) {
+    const existing = r.find((i) => i.info[blockKey] === item[blockKey]);
+
+    if (existing) {
+      if (!existing[item["MONTH"]]) {
+        existing[item["MONTH"]] = item;
+        continue;
+      }
+      for (const col of that.viewOption === "Percentages"
+        ? that.percentageColumns
+        : that.numberColumns) {
+        existing[item["MONTH"]][col.field] += item[col.field];
+      }
+    } else {
+      const newItem: any = {
+        info: {
+          [blockKey]: item[blockKey],
+        },
+        [item["MONTH"]]: item,
+      };
+      item["DM_REP_ID"] && (newItem.info["DM_REP_ID"] = item["DM_REP_ID"]);
+      item["REP_NAME"] && (newItem.info["REP_NAME"] = item["REP_NAME"]);
+
+      r.push(newItem);
+    }
+  }
+
+  for (const item of r) {
+    item.info["POINTS"] = 0;
+    item.info["SALES"] = 0;
+
+    for (const month of PULSE_MONTHS) {
+      if (!item[month]) {
+        item[month] = {
+          MONTH: month,
+        };
+        continue;
+      }
+      item[month]["POINTS"] && (item.info["POINTS"] += item[month]["POINTS"]);
+      item[month]["SALES"] && (item.info["SALES"] += item[month]["SALES"]);
+    }
+  }
+
+  return [...Array(r.length * 3)].map((_, index) => {
+    const month = PULSE_MONTHS[index % 3];
+    const item = r[Math.floor(index / 3)];
+    return {
+      ...item[month],
+      ...item.info,
+      MONTH: moment(item[month].MONTH).format("MMM yyyy"),
+    };
+  });
+};
