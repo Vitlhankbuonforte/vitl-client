@@ -3,11 +3,9 @@
         <Column bodyClass="text-left" headerClass="text-left text-dark bg-light font-medium" :frozen="true"
             :field="'REGION'" :header="'Region'">
             <template #body="slotProps">
-                <div class="flex flex-nowrap align-items-center">
-                    <Avatar :label="slotProps.data['REGION'].split(' ').pop().substr(0, 2)" class="mr-2"
-                        style="background-color:#9c27b0; color: #ffffff" shape="circle" />
-                    <span class="short-text">{{ slotProps.data['REGION'] }}</span>
-                </div>
+                <SmallBadge :id="slotProps.data['RM_REP_ID']" :text="slotProps.data['REGION']"
+                    v-tooltip="slotProps.data['REGION']" category="region" class="short-text"
+                    :alt="slotProps.data['REGION'].split(' ').pop().substring(0, 2)" />
             </template>
         </Column>
     </NumbersTable>
@@ -19,9 +17,9 @@
         <template v-slot:body>
             <Column bodyClass="text-left" :frozen="true" :field="'REGION'">
                 <template #body="slotProps">
-                    <Avatar :label="slotProps.data['REGION'].split(' ').pop().substr(0, 2)" class="mr-2"
-                        style="background-color:#9c27b0; color: #ffffff" shape="circle" />
-                    <span class="short-text">{{ slotProps.data['REGION'] }}</span>
+                    <SmallBadge :id="slotProps.data['RM_REP_ID']" :text="slotProps.data['REGION']"
+                        v-tooltip="slotProps.data['REGION']" category="region" class="short-text"
+                        :alt="slotProps.data['REGION'].split(' ').pop().substring(0, 2)" />
                 </template>
             </Column>
         </template>

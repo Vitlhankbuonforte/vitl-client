@@ -43,3 +43,9 @@ const columns = computed(() =>
         cols
 )
 </script>
+
+<style scoped>
+:deep(.p-datatable-wrapper) {
+    padding-bottom: 8px;
+}
+</style>
