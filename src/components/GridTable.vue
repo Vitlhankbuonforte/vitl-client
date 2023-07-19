@@ -68,20 +68,11 @@
                     {{ Math.floor(index / 3) + 1 }}
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="z-2" style="left: 40px">
-                    <!-- <SmallBadge v-if="lastBlock === 'Rep'" :id="row['REP_ID']" :text="row['REP_NAME']"
-                        v-tooltip="row['REP_NAME']" class="short-text" category="rep"
-                        :alt="row['REP_NAME'].split(' ').pop().substring(0, 2)" />
-                    <div v-else-if="lastBlock === 'Region'" class="text-left font-medium">
-                        <Avatar :label="row['REGION'].substr(2, 2)" class="mr-2"
-                            style="background-color:#9c27b0; color: #ffffff" shape="circle" />
-                        <span class="short-text">{{ row['REGION'] }}</span>
-                    </div> -->
                     <SmallBadge :id="row['DM_REP_ID']" :text="row['DISTRICT']" category="team" v-tooltip="row['DISTRICT']"
                         class="short-text" :alt="row['DISTRICT'].split(' ').pop().substring(0, 2)" />
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)">
-                    {{ row.POINTS || (row.SALES ?
-                        Math.round(row.SALES * 100) + '%' : '0') }}</td>
+                    {{ Math.round(viewOption === 'Percentages' ? row.POINTS : row.SALES) }}</td>
                 <td :style="cellStyle(false, index)">
                     {{ row.MONTH }}</td>
                 <td v-for="col in agColumns" :key="col.field" :style="cellStyle(false, index, row, col)">
@@ -141,9 +132,21 @@ const onHover = (span: boolean, index: number) => {
 }
 
 const getValue = (row: any, col: any) => {
-    return viewOption.value === 'Percentages' ? col.field != 'POINTS' ?
-        (row[col.field] ?
-            Math.round(row[col.field] * 100) + '%' : '0') : row[col.field] : Math.round(row[col.field] || 0)
+    let v = +row[col.field] || 0;
+
+    if (viewOption.value === 'Percentages') {
+        if (col.field === 'POINTS') {
+            return v;
+        }
+        v = v * 100;
+    }
+
+    if (['SALES_GOAL', 'RWS_P'].includes(col.field)) {
+        v = parseFloat(v.toFixed(1));
+    } else {
+        v = Math.round(v);
+    }
+    return viewOption.value === 'Percentages' ? v + '%' : v;
 }
 
 const highlighted = (field: any, item: any) => {

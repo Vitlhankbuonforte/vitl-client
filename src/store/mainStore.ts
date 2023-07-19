@@ -87,6 +87,35 @@ export const useMainStore = defineStore("store", {
         );
       }
       if (state.sortBy) {
+        if (state.sortBy === "POINTS") {
+          data = data.sort((a, b) => {
+            let diff = b["POINTS"] - a["POINTS"];
+
+            if (diff !== 0) {
+              return diff;
+            }
+            diff = b["SALES_GOAL"] - a["SALES_GOAL"];
+
+            if (diff !== 0) {
+              return diff;
+            }
+            return b["RWS_P"] - a["RWS_P"] > 0 ? 1 : -1;
+          });
+        } else if (state.sortBy === 'SALES') {
+          data = data.sort((a, b) => {
+            let diff = b["SALES"] - a["SALES"];
+
+            if (diff !== 0) {
+              return diff;
+            }
+            diff = b["GOAL"] - a["GOAL"];
+
+            if (diff !== 0) {
+              return diff;
+            }
+            return b["RWS"] - a["RWS"] > 0 ? 1 : -1;
+          });
+        }
         data = data.sort((a, b) => -a[state.sortBy] + b[state.sortBy]);
       }
       return data;

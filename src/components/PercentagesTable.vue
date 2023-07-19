@@ -75,10 +75,8 @@
             <Column v-for="col of columns" :key="col.field" :field="col.field" body-class="p-0">
                 <template #body="slotProps">
                     <div :class="`py-3 px-2 h-full ${highlight ? highlighted(col.field, slotProps.data[col.field]) : ''}`">
-                        {{
-                            col.field != 'POINTS' ?
-                            (slotProps.data[col.field] ?
-                                Math.round(slotProps.data[col.field] * 100) + '%' : '0') : slotProps.data[col.field] }}</div>
+                        {{ getValue(slotProps.data, col) }}
+                    </div>
                 </template>
             </Column>
         </DataTable>
@@ -119,6 +117,23 @@ const columns = computed(() =>
         cols.filter(col => !['DM_PERSONAL', 'DM_PERSONAL_INSTALLS'].includes(col.field)) :
         cols
 )
+
+const getValue = (row: any, col: any) => {
+    let v = +row[col.field] || 0;
+
+    if (col.field === 'POINTS') {
+        return v;
+    }
+    v = v * 100;
+
+    if (['SALES_GOAL', 'RWS_P'].includes(col.field)) {
+        v = parseFloat(v.toFixed(1));
+    } else {
+        v = Math.round(v);
+    }
+    return v + '%';
+}
+
 </script>
 
 <style scoped>
