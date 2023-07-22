@@ -229,17 +229,19 @@ export const useMainStore = defineStore("store", {
           points +=
             x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
 
-          points += x["VAR_P"] >= 0.25 ? 5 : x["VAR_P"] * 5;
+          points += x["VAR_P"] > 0.25 ? 5 : x["VAR_P"] * 5;
 
           points +=
-            x["CLEAN_SALES"] >= 1
+            x["CLEAN_SALES_P"] >= 1
               ? 10
-              : x["CLEAN_SALES"] <= 0.6
+              : x["CLEAN_SALES_P"] <= 0.6
               ? 0
-              : x["CLEAN_SALES"] * 10;
+              : x["CLEAN_SALES_P"] * 10;
 
           points +=
-            x["PERSONAL_INSTALLS"] >= 1 ? 10 : x["PERSONAL_INSTALLS"] * 10;
+            x["DM_PERSONAL_INSTALLS"] >= 1
+              ? 10
+              : x["DM_PERSONAL_INSTALLS"] * 10;
 
           points +=
             x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
@@ -265,7 +267,12 @@ export const useMainStore = defineStore("store", {
               ? 0
               : x["PERSONAL_PRODUCTION_P"] * 10;
 
-          points += x["SG_SALES_P"] >= 0.3 ? 5 : x["SG_SALES_P"] <= 0.1 ? 0 : x["SG_SALES_P"] * 5;
+          points +=
+            x["SG_SALES_P"] >= 0.3
+              ? 5
+              : x["SG_SALES_P"] <= 0.1
+              ? 0
+              : x["SG_SALES_P"] * 5;
 
           points +=
             x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
@@ -297,7 +304,7 @@ export const useMainStore = defineStore("store", {
               : x["NET_PPW_TO_TARGET_P"] * 5;
         }
         x["POINTS"] = Math.round(points);
-        console.log(points)
+        console.log(points);
       }
 
       this.allRegions = allData
