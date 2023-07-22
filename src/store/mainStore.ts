@@ -256,7 +256,7 @@ export const useMainStore = defineStore("store", {
           points +=
             x["SALES_GOAL_P"] > 1
               ? 35
-              : x["SALES_GOAL_P"] < 0.4
+              : x["SALES_GOAL_P"] < 0.5
               ? 0
               : x["SALES_GOAL_P"] * 35;
 
