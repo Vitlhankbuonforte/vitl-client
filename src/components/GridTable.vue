@@ -141,7 +141,7 @@ const getValue = (row: any, col: any) => {
         v = v * 100;
     }
 
-    if (['SALES_GOAL', 'RWS_P'].includes(col.field)) {
+    if (['SALES_GOAL_P', 'RWS_P'].includes(col.field)) {
         v = parseFloat(v.toFixed(1));
     } else {
         v = Math.round(v);
@@ -151,15 +151,15 @@ const getValue = (row: any, col: any) => {
 
 const highlighted = (field: any, item: any) => {
     const rules: any = {
-        SALES_GOAL: 1,
+        SALES_GOAL_P: 1,
         DM_PERSONAL: 1,
-        SG_P: 0.3,
+        SG_SALES_P: 0.3,
         PRR_P: 0.75,
         VAR: 0.25,
         DM_PERSONAL_INSTALLS: 1,
-        CLEAN_P: 1,
+        CLEAN_SALES_P: 1,
         RWS_P: 1,
-        NET_PPW_P: 1,
+        NET_PPW_TO_TARGET_P: 1,
     }
     return rules[field] <= item ? 'bg-primary' : '';
 }

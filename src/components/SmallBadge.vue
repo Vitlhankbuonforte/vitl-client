@@ -12,7 +12,7 @@
 
 defineProps({
     text: String,
-    id: String,
+    id: Number,
     category: String,
     alt: String,
 })

@@ -48,15 +48,15 @@ export const useMainStore = defineStore("store", {
     ],
     percentageColumns: [
       { field: "POINTS", title: "Points" },
-      { field: "SALES_GOAL", title: "Sales Goal" },
+      { field: "SALES_GOAL_P", title: "Sales Goal" },
       { field: "DM_PERSONAL", title: "DM Personal" },
-      { field: "SG_P", title: "SG %", class: "border-right-1" },
+      { field: "SG_SALES_P", title: "SG %", class: "border-right-1" },
       { field: "PRR_P", title: "PRR" },
-      { field: "VAR", title: "VAR" },
+      { field: "VAR_P", title: "VAR" },
       { field: "DM_PERSONAL_INSTALLS", title: "DM Installs" },
-      { field: "CLEAN_P", title: "Clean %", class: "border-right-1" },
+      { field: "CLEAN_SALES_P", title: "Clean %", class: "border-right-1" },
       { field: "RWS_P", title: "RWS %" },
-      { field: "NET_PPW_P", title: "Net PPW to Target" },
+      { field: "NET_PPW_TO_TARGET_P", title: "Net PPW to Target" },
     ],
   }),
   getters: {
@@ -94,7 +94,7 @@ export const useMainStore = defineStore("store", {
             if (diff !== 0) {
               return diff;
             }
-            diff = b["SALES_GOAL"] - a["SALES_GOAL"];
+            diff = b["SALES_GOAL_P"] - a["SALES_GOAL_P"];
 
             if (diff !== 0) {
               return diff;
@@ -187,29 +187,29 @@ export const useMainStore = defineStore("store", {
       const allData = res.data;
       this.allData = allData.map((x: any) => ({
         ...x,
-        SALES_GOAL: x["GOAL"] ? x["SALES"] / x["GOAL"] : 0,
+        SALES_GOAL_P: x["GOAL"] ? x["SALES"] / x["GOAL"] : 0,
+        PERSONAL_PRODUCTION_P: x["PERSONAL_SALES"]
+          ? x["PERSONAL_SALES"] / 10
+          : 0,
         DM_PERSONAL:
           this.lastBlock === "Region"
             ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
             : x["PERSONAL_SALES"]
             ? x["PERSONAL_SALES"] / 10
             : 0,
-        SG_P: x["SALES"] ? x["SG_SALES"] / x["SALES"] : 0,
+        SG_SALES_P: x["SALES"] ? x["SG_SALES"] / x["SALES"] : 0,
         PRR_P: x["SALES"] ? x["PRR"] / x["SALES"] : 0,
-        VAR: x["SALES"] ? x["VIVINT_SALES"] / x["SALES"] : 0,
+        VAR_P: x["SALES"] ? x["VIVINT_SALES"] / x["SALES"] : 0,
         DM_PERSONAL_INSTALLS:
           this.lastBlock === "Region"
             ? x["PERSONAL_INSTALLS"] / x["PERSONAL_INSTALLS_GOAL"]
             : x["PERSONAL_INSTALLS"]
             ? x["PERSONAL_INSTALLS"] / 6
             : 0,
-        CLEAN_P: x["SALES"] ? x["CLEAN_SALES"] / x["SALES"] : 0,
+        CLEAN_SALES_P: x["SALES"] ? x["CLEAN_SALES"] / x["SALES"] : 0,
         RWS_P: x["ACTIVE_REPS"] ? x["RWS"] / x["ACTIVE_REPS"] : 0,
-        NET_PPW_P: x["SUGGESTED_NET_PPW"]
+        NET_PPW_TO_TARGET_P: x["SUGGESTED_NET_PPW"]
           ? x["NET_PPW"] / x["SUGGESTED_NET_PPW"]
-          : 0,
-        PERSONAL_PRODUCTION_P: x["PERSONAL_SALES"]
-          ? x["PERSONAL_SALES"] / 10
           : 0,
       }));
 
@@ -217,7 +217,7 @@ export const useMainStore = defineStore("store", {
         let points = 0;
 
         if (this.lastBlock === "Rep") {
-          points += x["SALES_GOAL"] > 1 ? 35 : x["SALES_GOAL"] * 35;
+          points += x["SALES_GOAL_P"] > 1 ? 35 : x["SALES_GOAL_P"] * 35;
 
           points +=
             x["SG_SALES"] >= 0.3
@@ -229,7 +229,7 @@ export const useMainStore = defineStore("store", {
           points +=
             x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
 
-          points += x["VAR"] >= 0.25 ? 5 : x["VAR"] * 5;
+          points += x["VAR_P"] >= 0.25 ? 5 : x["VAR_P"] * 5;
 
           points +=
             x["CLEAN_SALES"] >= 1
@@ -245,18 +245,18 @@ export const useMainStore = defineStore("store", {
             x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
 
           points +=
-            x["NET_PPW_P"] >= 1
+            x["NET_PPW_TO_TARGET_P"] >= 1
               ? 5
-              : x["NET_PPW_P"] <= 0.8
+              : x["NET_PPW_TO_TARGET_P"] <= 0.8
               ? 0
-              : x["NET_PPW_P"] * 5;
+              : x["NET_PPW_TO_TARGET_P"] * 5;
         } else {
           points +=
-            x["SALES_GOAL"] > 1
+            x["SALES_GOAL_P"] > 1
               ? 35
-              : x["SALES_GOAL"] < 0.4
+              : x["SALES_GOAL_P"] < 0.4
               ? 0
-              : x["SALES_GOAL"] * 35;
+              : x["SALES_GOAL_P"] * 35;
 
           points +=
             x["PERSONAL_PRODUCTION_P"] >= 1
@@ -265,38 +265,39 @@ export const useMainStore = defineStore("store", {
               ? 0
               : x["PERSONAL_PRODUCTION_P"] * 10;
 
-          points += x["SG_P"] >= 0.3 ? 5 : x["SG_P"] <= 0.1 ? 0 : x["SG_P"] * 5;
+          points += x["SG_SALES_P"] >= 0.3 ? 5 : x["SG_SALES_P"] <= 0.1 ? 0 : x["SG_SALES_P"] * 5;
 
           points +=
             x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
 
-          points += x["VAR"] > 0.25 ? 5 : x["VAR"] * 5;
+          points += x["VAR_P"] > 0.25 ? 5 : x["VAR_P"] * 5;
 
           points +=
-            x["CLEAN_P"] >= 1
+            x["CLEAN_SALES_P"] >= 1
               ? 10
-              : x["CLEAN_P"] <= 0.6
+              : x["CLEAN_SALES_P"] <= 0.6
               ? 0
-              : x["CLEAN_P"] * 10;
+              : x["CLEAN_SALES_P"] * 10;
 
           points +=
-            x["PERSONAL_INSTALLS"] >= 1
+            x["DM_PERSONAL_INSTALLS"] >= 1
               ? 10
-              : x["PERSONAL_INSTALLS"] < 1 / 3
+              : x["DM_PERSONAL_INSTALLS"] < 1 / 3
               ? 0
-              : x["PERSONAL_INSTALLS"] * 10;
+              : x["DM_PERSONAL_INSTALLS"] * 10;
 
           points +=
             x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
 
           points +=
-            x["NET_PPW_P"] >= 1
+            x["NET_PPW_TO_TARGET_P"] >= 1
               ? 5
-              : x["NET_PPW_P"] <= 0.8
+              : x["NET_PPW_TO_TARGET_P"] <= 0.8
               ? 0
-              : x["NET_PPW_P"] * 5;
+              : x["NET_PPW_TO_TARGET_P"] * 5;
         }
         x["POINTS"] = Math.round(points);
+        console.log(points)
       }
 
       this.allRegions = allData
