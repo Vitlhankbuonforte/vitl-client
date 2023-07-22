@@ -101,7 +101,7 @@ export const useMainStore = defineStore("store", {
             }
             return b["RWS_P"] - a["RWS_P"] > 0 ? 1 : -1;
           });
-        } else if (state.sortBy === 'SALES') {
+        } else if (state.sortBy === "SALES") {
           data = data.sort((a, b) => {
             let diff = b["SALES"] - a["SALES"];
 
@@ -208,6 +208,9 @@ export const useMainStore = defineStore("store", {
         NET_PPW_P: x["SUGGESTED_NET_PPW"]
           ? x["NET_PPW"] / x["SUGGESTED_NET_PPW"]
           : 0,
+        PERSONAL_PRODUCTION_P: x["PERSONAL_SALES"]
+          ? x["PERSONAL_SALES"] / 10
+          : 0,
       }));
 
       for (let x of this.allData as any[]) {
@@ -217,9 +220,36 @@ export const useMainStore = defineStore("store", {
           points += x["SALES_GOAL"] > 1 ? 35 : x["SALES_GOAL"] * 35;
 
           points +=
-            x["DM_PERSONAL_INSTALLS"] >= 1
+            x["SG_SALES"] >= 0.3
+              ? 5
+              : x["SG_SALES"] <= 0.1
+              ? 0
+              : x["SG_SALES"] * 5;
+
+          points +=
+            x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
+
+          points += x["VAR"] >= 0.25 ? 5 : x["VAR"] * 5;
+
+          points +=
+            x["CLEAN_SALES"] >= 1
               ? 10
-              : x["DM_PERSONAL_INSTALLS"] * 10;
+              : x["CLEAN_SALES"] <= 0.6
+              ? 0
+              : x["CLEAN_SALES"] * 10;
+
+          points +=
+            x["PERSONAL_INSTALLS"] >= 1 ? 10 : x["PERSONAL_INSTALLS"] * 10;
+
+          points +=
+            x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
+
+          points +=
+            x["NET_PPW_P"] >= 1
+              ? 5
+              : x["NET_PPW_P"] <= 0.8
+              ? 0
+              : x["NET_PPW_P"] * 5;
         } else {
           points +=
             x["SALES_GOAL"] > 1
@@ -229,57 +259,43 @@ export const useMainStore = defineStore("store", {
               : x["SALES_GOAL"] * 35;
 
           points +=
-            x["DM_PERSONAL"] >= 1
+            x["PERSONAL_PRODUCTION_P"] >= 1
               ? 10
-              : x["DM_PERSONAL"] < 0.4
+              : x["PERSONAL_PRODUCTION_P"] < 0.4
               ? 0
-              : x["DM_PERSONAL"] * 10;
+              : x["PERSONAL_PRODUCTION_P"] * 10;
+
+          points += x["SG_P"] >= 0.3 ? 5 : x["SG_P"] <= 0.1 ? 0 : x["SG_P"] * 5;
 
           points +=
-            x["DM_PERSONAL_INSTALLS"] >= 1
+            x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
+
+          points += x["VAR"] > 0.25 ? 5 : x["VAR"] * 5;
+
+          points +=
+            x["CLEAN_P"] >= 1
               ? 10
-              : x["DM_PERSONAL_INSTALLS"] < 1 / 3
+              : x["CLEAN_P"] <= 0.6
               ? 0
-              : x["DM_PERSONAL_INSTALLS"] * 10;
+              : x["CLEAN_P"] * 10;
+
+          points +=
+            x["PERSONAL_INSTALLS"] >= 1
+              ? 10
+              : x["PERSONAL_INSTALLS"] < 1 / 3
+              ? 0
+              : x["PERSONAL_INSTALLS"] * 10;
+
+          points +=
+            x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
+
+          points +=
+            x["NET_PPW_P"] >= 1
+              ? 5
+              : x["NET_PPW_P"] <= 0.8
+              ? 0
+              : x["NET_PPW_P"] * 5;
         }
-
-        points +=
-          x["SG_P"] >= 0.3
-            ? 5
-            : x["SG_P"] <= 0.1
-            ? 0
-            : ((x["SG_P"] - 0.1) / 0.2) * 5;
-
-        points +=
-          x["PRR_P"] >= 0.6
-            ? 10
-            : x["PRR_P"] <= 0.5
-            ? 0
-            : ((x["PRR_P"] - 0.5) / 0.25) * 10;
-
-        points += x["VAR"] > 0.25 ? 5 : x["VAR"] * 5;
-
-        points +=
-          x["CLEAN_P"] >= 1
-            ? 10
-            : x["CLEAN_P"] <= 0.6
-            ? 0
-            : ((x["CLEAN_P"] - 0.6) / 0.4) * 10;
-
-        points +=
-          x["RWS_P"] >= 1
-            ? 10
-            : x["RWS_P"] <= 0.6
-            ? 0
-            : ((x["RWS_P"] - 0.6) / 0.4) * 10;
-
-        points +=
-          x["NET_PPW_P"] >= 1
-            ? 5
-            : x["NET_PPW_P"] <= 0.8
-            ? 0
-            : ((x["NET_PPW_P"] - 0.8) / 0.2) * 5;
-
         x["POINTS"] = Math.round(points);
       }
 
