@@ -188,14 +188,17 @@ export const useMainStore = defineStore("store", {
       this.allData = allData.map((x: any) => ({
         ...x,
         SALES_GOAL_P: x["GOAL"] ? x["SALES"] / x["GOAL"] : 0,
-        PERSONAL_PRODUCTION_P: x["PERSONAL_SALES"]
-          ? x["PERSONAL_SALES"] / 10
+        PERSONAL_PRODUCTION_P: x["PERSONAL_SALES_GOAL"]
+          ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
           : 0,
         DM_PERSONAL:
-          this.lastBlock === "Region"
+          // this.lastBlock === "Region"
+          //   ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
+          //   : x["PERSONAL_SALES"]
+          //   ? x["PERSONAL_SALES"] / 10
+          //   : 0,
+          x["PERSONAL_SALES_GOAL"]
             ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
-            : x["PERSONAL_SALES"]
-            ? x["PERSONAL_SALES"] / 10
             : 0,
         SG_SALES_P: x["SALES"] ? x["SG_SALES"] / x["SALES"] : 0,
         PRR_P: x["SALES"] ? x["PRR"] / x["SALES"] : 0,
