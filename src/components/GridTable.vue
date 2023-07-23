@@ -154,7 +154,7 @@ const highlighted = (field: any, item: any) => {
         SALES_GOAL_P: 1,
         DM_PERSONAL: 1,
         SG_SALES_P: 0.3,
-        PRR_P: 0.75,
+        PRR_P: 0.6,
         VAR: 0.25,
         DM_PERSONAL_INSTALLS: 1,
         CLEAN_SALES_P: 1,
