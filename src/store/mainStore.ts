@@ -307,7 +307,6 @@ export const useMainStore = defineStore("store", {
               : x["NET_PPW_TO_TARGET_P"] * 5;
         }
         x["POINTS"] = Math.round(points);
-        console.log(points);
       }
 
       this.allRegions = allData

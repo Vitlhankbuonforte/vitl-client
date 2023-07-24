@@ -9,11 +9,10 @@
     </div>
 </template>
 <script lang="ts" setup>
-
-defineProps({
-    text: String,
-    id: Number,
-    category: String,
-    alt: String,
-})
+defineProps<{
+    text: string,
+    id: number | string,
+    category: string,
+    alt: string,
+}>()
 </script>
