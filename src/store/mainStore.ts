@@ -191,15 +191,9 @@ export const useMainStore = defineStore("store", {
         PERSONAL_PRODUCTION_P: x["PERSONAL_SALES_GOAL"]
           ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
           : 0,
-        DM_PERSONAL:
-          // this.lastBlock === "Region"
-          //   ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
-          //   : x["PERSONAL_SALES"]
-          //   ? x["PERSONAL_SALES"] / 10
-          //   : 0,
-          x["PERSONAL_SALES_GOAL"]
-            ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
-            : 0,
+        DM_PERSONAL: x["PERSONAL_SALES_GOAL"]
+          ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
+          : 0,
         SG_SALES_P: x["SALES"] ? x["SG_SALES"] / x["SALES"] : 0,
         PRR_P: x["SALES"] ? x["PRR"] / x["SALES"] : 0,
         VAR_P: x["SALES"] ? x["VIVINT_SALES"] / x["SALES"] : 0,
@@ -217,6 +211,17 @@ export const useMainStore = defineStore("store", {
       }));
 
       for (let x of this.allData as any[]) {
+        let VAR_PERCENT = 0.25,
+          VAR_POINTS = 5,
+          RWS_POINTS = 10;
+
+        if (this.pulseView && x.MONTH > "2023-07-01") {
+          VAR_PERCENT = 0.8;
+          VAR_POINTS = 10;
+          RWS_POINTS = 15;
+          x["DM_PERSONAL_INSTALLS"] = 0;
+        }
+
         let points = 0;
 
         if (this.lastBlock === "Rep") {
@@ -232,7 +237,8 @@ export const useMainStore = defineStore("store", {
           points +=
             x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
 
-          points += x["VAR_P"] > 0.25 ? 5 : x["VAR_P"] * 5;
+          points +=
+            x["VAR_P"] > VAR_PERCENT ? VAR_POINTS : x["VAR_P"] * VAR_POINTS;
 
           points +=
             x["CLEAN_SALES_P"] >= 1
@@ -247,7 +253,11 @@ export const useMainStore = defineStore("store", {
               : x["DM_PERSONAL_INSTALLS"] * 10;
 
           points +=
-            x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
+            x["RWS_P"] >= 1
+              ? RWS_POINTS
+              : x["RWS_P"] <= 0.6
+              ? 0
+              : x["RWS_P"] * RWS_POINTS;
 
           points +=
             x["NET_PPW_TO_TARGET_P"] >= 1
@@ -280,7 +290,8 @@ export const useMainStore = defineStore("store", {
           points +=
             x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
 
-          points += x["VAR_P"] > 0.25 ? 5 : x["VAR_P"] * 5;
+          points +=
+            x["VAR_P"] > VAR_PERCENT ? VAR_POINTS : x["VAR_P"] * VAR_POINTS;
 
           points +=
             x["CLEAN_SALES_P"] >= 1
@@ -289,15 +300,21 @@ export const useMainStore = defineStore("store", {
               ? 0
               : x["CLEAN_SALES_P"] * 10;
 
-          points +=
-            x["DM_PERSONAL_INSTALLS"] >= 1
-              ? 10
-              : x["DM_PERSONAL_INSTALLS"] < 1 / 3
-              ? 0
-              : x["DM_PERSONAL_INSTALLS"] * 10;
+          if (!this.pulseView) {
+            points +=
+              x["DM_PERSONAL_INSTALLS"] >= 1
+                ? 10
+                : x["DM_PERSONAL_INSTALLS"] < 1 / 3
+                ? 0
+                : x["DM_PERSONAL_INSTALLS"] * 10;
+          }
 
           points +=
-            x["RWS_P"] >= 1 ? 10 : x["RWS_P"] <= 0.6 ? 0 : x["RWS_P"] * 10;
+            x["RWS_P"] >= 1
+              ? RWS_POINTS
+              : x["RWS_P"] <= 0.6
+              ? 0
+              : x["RWS_P"] * RWS_POINTS;
 
           points +=
             x["NET_PPW_TO_TARGET_P"] >= 1
