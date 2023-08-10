@@ -300,14 +300,12 @@ export const useMainStore = defineStore("store", {
               ? 0
               : x["CLEAN_SALES_P"] * 10;
 
-          if (!this.pulseView) {
-            points +=
-              x["DM_PERSONAL_INSTALLS"] >= 1
-                ? 10
-                : x["DM_PERSONAL_INSTALLS"] < 1 / 3
-                ? 0
-                : x["DM_PERSONAL_INSTALLS"] * 10;
-          }
+          points +=
+            x["DM_PERSONAL_INSTALLS"] >= 1
+              ? 10
+              : x["DM_PERSONAL_INSTALLS"] < 1 / 3
+              ? 0
+              : x["DM_PERSONAL_INSTALLS"] * 10;
 
           points +=
             x["RWS_P"] >= 1
