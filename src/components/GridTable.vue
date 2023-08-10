@@ -26,8 +26,8 @@
                     <th class="text-dark bg-light font-medium border-bottom-1">10</th>
                     <th class="border-right-1 text-dark bg-light font-medium border-bottom-1">30%</th>
                     <th class="text-dark bg-light font-medium border-bottom-1">60%</th>
-                    <th class="text-dark bg-light font-medium border-bottom-1">25%</th>
-                    <th class="text-dark bg-light font-medium border-bottom-1">6</th>
+                    <th class="text-dark bg-light font-medium border-bottom-1">80%</th>
+                    <th class="text-dark bg-light font-medium border-bottom-1">0</th>
                     <th class="border-right-1 text-dark bg-light font-medium border-bottom-1">100%</th>
                     <th class="text-dark bg-light font-medium border-bottom-1">100%</th>
                     <th class="text-dark bg-light font-medium border-bottom-1">100%</th>
@@ -38,10 +38,10 @@
                     <th class="text-dark bg-light font-medium">10</th>
                     <th class="border-right-1 text-dark bg-light font-medium">5</th>
                     <th class="text-dark bg-light font-medium">10</th>
-                    <th class="text-dark bg-light font-medium">5</th>
                     <th class="text-dark bg-light font-medium">10</th>
+                    <th class="text-dark bg-light font-medium">0</th>
                     <th class="border-right-1 text-dark bg-light font-medium">10</th>
-                    <th class="text-dark bg-light font-medium">10</th>
+                    <th class="text-dark bg-light font-medium">15</th>
                     <th class="text-dark bg-light font-medium" style="border-bottom-right-radius: 6px">5</th>
                 </tr>
                 <tr>
