@@ -32,7 +32,7 @@
                     <Column v-if="lastBlock !== 'Rep'" headerClass="text-dark bg-light font-medium" header="10" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="30%" />
                     <Column headerClass="text-dark bg-light font-medium" header="60%" />
-                    <Column headerClass="text-dark bg-light font-medium" header="25%" />
+                    <Column headerClass="text-dark bg-light font-medium" header="80%" />
                     <Column v-if="lastBlock !== 'Rep'" headerClass="text-dark bg-light font-medium" header="6" />
                     <Column headerClass="border-right-1 text-dark bg-light font-medium" header="100%" />
                     <Column headerClass="text-dark bg-light font-medium" header="100%" />
