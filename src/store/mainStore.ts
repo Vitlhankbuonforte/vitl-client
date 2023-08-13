@@ -307,12 +307,7 @@ export const useMainStore = defineStore("store", {
               ? 0
               : x["DM_PERSONAL_INSTALLS"] * 10;
 
-          points +=
-            x["RWS_P"] >= 1
-              ? RWS_POINTS
-              : x["RWS_P"] <= 0.6
-              ? 0
-              : x["RWS_P"] * RWS_POINTS;
+          points += x["RWS_P"] >= 1 ? RWS_POINTS : x["RWS_P"] * RWS_POINTS;
 
           points +=
             x["NET_PPW_TO_TARGET_P"] >= 1
@@ -322,6 +317,7 @@ export const useMainStore = defineStore("store", {
               : x["NET_PPW_TO_TARGET_P"] * 5;
         }
         x["POINTS"] = Math.round(points);
+        console.log(x["REGION"], x["MONTH"], x["POINTS"]);
       }
 
       this.allRegions = allData
