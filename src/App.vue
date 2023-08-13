@@ -36,7 +36,7 @@
           <label class="text-gray-900 mb-1">DMs</label>
           <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)" />
         </div>
-        <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
+        <div v-if="!pulseView" class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Sort</label>
           <Dropdown v-model="sortBy" :option-label="'title'" :option-value="'field'" :options="sortItems"
             placeholder="Sort By" />
@@ -84,7 +84,7 @@
           <label class="text-gray-900 mb-1">DMs</label>
           <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)" />
         </div>
-        <div class="p-2 bg-gray-50 border-round flex flex-column">
+        <div v-if="!pulseView" class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Sort</label>
           <Dropdown v-model="sortBy" :option-label="'title'" :option-value="'field'" :options="sortItems"
             placeholder="Sort By" />

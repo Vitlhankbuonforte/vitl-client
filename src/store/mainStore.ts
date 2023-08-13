@@ -408,7 +408,13 @@ const generatePulseData = (data: any[], that: any) => {
       item[month]["POINTS"] && (item.info["POINTS"] += item[month]["POINTS"]);
       item[month]["SALES"] && (item.info["SALES"] += item[month]["SALES"]);
     }
+    const currentMonth = new Date().getMonth() + 1;
+    const avg = currentMonth > 6 ? currentMonth - 6 : 1;
+    item.info["POINTS"] = item.info["POINTS"] / avg;
   }
+  that.viewOption === "Percentages"
+    ? r.sort((a, b) => b.info["POINTS"] - a.info["POINTS"])
+    : r.sort((a, b) => b.info["SALES"] - a.info["SALES"]);
 
   return [...Array(r.length * 3)].map((_, index) => {
     const month = PULSE_MONTHS[index % 3];
