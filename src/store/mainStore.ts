@@ -215,6 +215,11 @@ export const useMainStore = defineStore("store", {
           VAR_POINTS = 5,
           RWS_POINTS = 10;
 
+        if (this.pulseView) {
+          x["DM_PERSONAL_INSTALLS"] =
+            x["PERSONAL_INSTALLS"] / x["PERSONAL_INSTALLS_GOAL"];
+        }
+
         if (this.pulseView && x.MONTH > "2023-07-01") {
           VAR_PERCENT = 0.8;
           VAR_POINTS = 10;
@@ -316,8 +321,7 @@ export const useMainStore = defineStore("store", {
               ? 0
               : x["NET_PPW_TO_TARGET_P"] * 5;
         }
-        x["POINTS"] = Math.round(points);
-        console.log(x["REGION"], x["MONTH"], x["POINTS"]);
+        x["POINTS"] = this.pulseView ? points : Math.round(points);
       }
 
       this.allRegions = allData
@@ -409,8 +413,8 @@ const generatePulseData = (data: any[], that: any) => {
     item.info["POINTS"] = item.info["POINTS"] / avg;
   }
   that.viewOption === "Percentages"
-    ? r.sort((a, b) => b.info["POINTS"] - a.info["POINTS"])
-    : r.sort((a, b) => b.info["SALES"] - a.info["SALES"]);
+    ? r.sort((a, b) => (b.info["POINTS"] > a.info["POINTS"] ? 1 : -1))
+    : r.sort((a, b) => (b.info["SALES"] > a.info["SALES"] ? 1 : -1));
 
   return [...Array(r.length * 3)].map((_, index) => {
     const month = PULSE_MONTHS[index % 3];
