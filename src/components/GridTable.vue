@@ -68,7 +68,7 @@
                     {{ Math.floor(index / 3) + 1 }}
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="z-2" style="left: 40px">
-                    <SmallBadge :id="row['DM_REP_ID']" :text="row['DISTRICT']" category="team" v-tooltip="row['DISTRICT']"
+                    <SmallBadge :id="row['DM_REP_ID'] || ''" :text="row['DISTRICT']" category="team" v-tooltip="row['DISTRICT']"
                         class="short-text" :alt="row['DISTRICT'].split(' ').pop().substring(0, 2)" />
                 </td>
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)">

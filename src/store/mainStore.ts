@@ -361,11 +361,13 @@ export const useMainStore = defineStore("store", {
 
 const generatePulseData = (data: any[], that: any) => {
   const r: any[] = [];
-  const blockKey: any = {
-    District: "DISTRICT",
-    Region: "REGION",
-    Rep: "REP_ID",
-  }[that.lastBlock as string];
+  // const blockKey: any = {
+  //   District: "DISTRICT",
+  //   Region: "REGION",
+  //   Rep: "REP_ID",
+  // }[that.lastBlock as string];
+  const blockKey = "DISTRICT";
+  data = JSON.parse(JSON.stringify(data));
 
   for (const item of data) {
     const existing = r.find((i) => i.info[blockKey] === item[blockKey]);
