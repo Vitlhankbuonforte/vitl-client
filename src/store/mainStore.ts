@@ -190,6 +190,95 @@ export const useMainStore = defineStore("store", {
         row["ACTIVE_REPS"] = row["ACTIVE_REPS"] || row["ACTIVE_REPS_"] || 0;
         row["RWS"] = row["RWS"] || row["RWS_"] || 0;
 
+        // if (this.lastBlock === "Rep") {
+        //   row.SALES_GOAL_P_POINTS =
+        //     row.SALES_GOAL_P_POINTS > 1 ? 35 : row.SALES_GOAL_P_POINTS * 35;
+        //   row.SG_SALES_P_POINTS =
+        //     row.SG_SALES_P >= 0.3
+        //       ? 5
+        //       : row.SG_SALES_P <= 0.1
+        //       ? 0
+        //       : row.SG_SALES_P * 5;
+        //   row.PRR_P_POINTS =
+        //     row.PRR_P >= 0.6 ? 10 : row.PRR_P <= 0.5 ? 0 : row.PRR_P * 10;
+        //   row.VAR_P_POINTS = row.VAR_P > 0.8 ? 5 : row.VAR_P * 5;
+        //   row.PERSONAL_INSTALLS_P_POINTS =
+        //     row.PERSONAL_INSTALLS_P >= 1 ? 10 : row.PERSONAL_INSTALLS_P * 10;
+        //   row.RWS_P_POINTS =
+        //     row.RWS_P >= 1 ? 10 : row.RWS_P <= 0.6 ? 0 : row.RWS_P * 10;
+        //   row.NET_PPW_TO_TARGET_P_POINTS =
+        //     row.NET_PPW_TO_TARGET_P >= 1
+        //       ? 5
+        //       : row.NET_PPW_TO_TARGET_P <= 0.8
+        //       ? 0
+        //       : row.NET_PPW_TO_TARGET_P * 5;
+        // } else {
+        //   row.SALES_GOAL_P_POINTS =
+        //     row.SALES_GOAL_P_POINTS > 1
+        //       ? 35
+        //       : row.SALES_GOAL_P_POINTS < 5 / 10
+        //       ? 0
+        //       : row.SALES_GOAL_P_POINTS * 35;
+        //   row.PERSONAL_PRODUCTION_P_POINTS =
+        //     row.PERSONAL_PRODUCTION_P >= 1
+        //       ? 10
+        //       : row.PERSONAL_PRODUCTION_P < 4 / 10
+        //       ? 0
+        //       : row.PERSONAL_PRODUCTION_P * 10;
+        //   row.SG_SALES_P_POINTS =
+        //     row.SG_SALES_P >= 0.3
+        //       ? 5
+        //       : row.SG_SALES_P <= 0.1
+        //       ? 0
+        //       : row.SG_SALES_P * 5;
+        //   row.PRR_P_POINTS =
+        //     row.PRR_P >= 0.6 ? 10 : row.PRR_P <= 0.5 ? 0 : row.PRR_P * 10;
+
+        //   if (this.pulseView) {
+        //     if (row.MONTH > "2023-07-01") {
+        //       row.VAR_P_POINTS = row.VAR_P > 0.8 ? 10 : row.VAR_P * 10;
+        //     } else {
+        //       row.VAR_P_POINTS = row.VAR_P > 0.25 ? 5 : row.VAR_P * 5;
+        //     }
+        //   } else {
+        //     row.VAR_P_POINTS = row.VAR_P > 0.8 ? 5 : row.VAR_P * 5;
+        //   }
+
+        //   if (this.pulseView && row.MONTH > "2023-07-01") {
+        //     row.PERSONAL_INSTALLS_P_POINTS = 0;
+        //   } else {
+        //     row.PERSONAL_INSTALLS_P_POINTS =
+        //       row.PERSONAL_INSTALLS_P >= 1
+        //         ? 10
+        //         : row.PERSONAL_INSTALLS_P < 2 / 6
+        //         ? 0
+        //         : row.PERSONAL_INSTALLS_P * 10;
+        //   }
+        //   row.CLEAN_SALES_P_POINTS =
+        //     row.CLEAN_SALES_P >= 1
+        //       ? 10
+        //       : row.CLEAN_SALES_P <= 0.6
+        //       ? 0
+        //       : row.CLEAN_SALES_P * 10;
+
+        //   if (this.pulseView) {
+        //     if (row.MONTH > "2023-07-01") {
+        //       row.RWS_P_POINTS = row.RWS_P >= 1 ? 15 : row.RWS_P * 15;
+        //     } else {
+        //       row.RWS_P_POINTS = row.RWS_P >= 1 ? 10 : row.RWS_P * 10;
+        //     }
+        //   } else {
+        //     row.RWS_P_POINTS =
+        //       row.RWS_P >= 1 ? 10 : row.RWS_P <= 0.6 ? 0 : row.RWS_P * 10;
+        //   }
+        //   row.NET_PPW_TO_TARGET_P_POINTS =
+        //     row.NET_PPW_TO_TARGET_P >= 1
+        //       ? 5
+        //       : row.NET_PPW_TO_TARGET_P <= 0.8
+        //       ? 0
+        //       : row.NET_PPW_TO_TARGET_P * 5;
+        // }
+
         for (const col of this.percentageColumns) {
           let v = +row[col.field] || 0;
 
@@ -284,7 +373,7 @@ const generatePulseData = (data: any[], that: any) => {
   }
 
   for (const item of r) {
-    item.info["DM_RM_POINTS"] = 0;
+    item.info["PULSE_POINTS"] = 0;
     item.info["SALES"] = 0;
 
     for (const month of PULSE_MONTHS) {
@@ -295,16 +384,16 @@ const generatePulseData = (data: any[], that: any) => {
         continue;
       }
       item[month]["DM_RM_POINTS"] &&
-        (item.info["DM_RM_POINTS"] += item[month]["DM_RM_POINTS"]);
+        (item.info["PULSE_POINTS"] += item[month]["DM_RM_POINTS"]);
       item[month]["SALES"] && (item.info["SALES"] += item[month]["SALES"]);
     }
     const currentMonth = new Date().getMonth() + 1;
     const avg = currentMonth > 6 ? currentMonth - 6 : 1;
-    item.info["DM_RM_POINTS"] = item.info["DM_RM_POINTS"] / avg;
+    item.info["PULSE_POINTS"] = item.info["PULSE_POINTS"] / avg;
   }
   that.viewOption === "Percentages"
     ? r.sort((a, b) =>
-        b.info["DM_RM_POINTS"] > a.info["DM_RM_POINTS"] ? 1 : -1
+        b.info["PULSE_POINTS"] > a.info["PULSE_POINTS"] ? 1 : -1
       )
     : r.sort((a, b) => (b.info["SALES"] > a.info["SALES"] ? 1 : -1));
 

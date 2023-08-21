@@ -81,13 +81,14 @@
                 <Row>
                     <Column footerClass="text-dark bg-light font-medium" :frozen="true" footer="Total" :colspan="2"
                         footerStyle="text-align:center;border-bottom-left-radius: 6px" />
-                    <Column footerClass="text-dark bg-light font-medium" v-for="col of columns" :footer="total[col.field]">
+                    <Column footerClass="text-dark bg-light font-medium" v-for="(col, index) of columns"
+                        :footer="total[col.field] + (index > 0 ? '%' : '')">
                     </Column>
                 </Row>
             </ColumnGroup>
         </DataTable>
         <OverlayPanel ref="tooltip" append-to="body">
-            <TooltipContent :columns="columns" :block="lastBlock" :value="tValue" viewOption="Percentages" />
+            <TooltipContent :columns="columns.slice(1)" :block="lastBlock" :value="tValue" viewOption="Percentages" />
         </OverlayPanel>
     </div>
 </template>

@@ -58,7 +58,10 @@ export function useTooltip({
       const col =
         field === "MONTH"
           ? { title: "Month", field: "MONTH" }
+          : field === "PULSE_POINTS"
+          ? { title: "Points", field: "PULSE_POINTS" }
           : columns.find((col: any) => col.field === field);
+
       showTooltip(el, row, pulse ? Math.floor(+index / 3) : +index, col);
     }
   }

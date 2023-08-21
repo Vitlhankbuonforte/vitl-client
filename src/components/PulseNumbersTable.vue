@@ -43,16 +43,16 @@
                 </td>
             </tr>
         </table>
-        <OverlayPanel ref="tooltip" append-to="body">
+        <!-- <OverlayPanel ref="tooltip" append-to="body">
             <TooltipContent :columns="agColumns" :block="lastBlock" :value="tValue" viewOption="Numbers" pulse />
-        </OverlayPanel>
+        </OverlayPanel> -->
     </div>
 </template>
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 import { useMainStore } from "../store/mainStore";
-import { useTooltip } from '../composables/useTooltip'
+// import { useTooltip } from '../composables/useTooltip'
 
 const store = useMainStore();
 const { pulseData: rows, loading, lastBlock, numberColumns } = storeToRefs(store);
@@ -84,7 +84,7 @@ const onHover = (span: boolean, index: number) => {
     return span ? hoverRow.value >= index && hoverRow.value <= index + 2 : Math.floor(hoverRow.value / 3) === Math.floor(index / 3);
 }
 
-const { tooltip, tValue } = useTooltip({ columns: numberColumns.value, pulse: true });
+// const { tooltip, tValue } = useTooltip({ columns: numberColumns.value, pulse: true });
 </script>
 
 <style lang="scss">

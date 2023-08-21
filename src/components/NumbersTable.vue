@@ -29,16 +29,16 @@
                 </Row>
             </ColumnGroup>
         </DataTable>
-        <OverlayPanel ref="tooltip" append-to="body">
+        <!-- <OverlayPanel ref="tooltip" append-to="body">
             <TooltipContent :columns="columns" :block="lastBlock" :value="tValue" viewOption="Numbers" />
-        </OverlayPanel>
+        </OverlayPanel> -->
     </div>
 </template>
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
 import { useMainStore } from "../store/mainStore";
 import { computed } from "vue";
-import { useTooltip } from '../composables/useTooltip'
+// import { useTooltip } from '../composables/useTooltip'
 
 const store = useMainStore();
 const cols = store.numberColumns;
@@ -55,7 +55,7 @@ const columns = computed(() =>
         cols
 )
 
-const { tooltip, tValue } = useTooltip({ columns: columns.value });
+// const { tooltip, tValue } = useTooltip({ columns: columns.value });
 
 </script>
 

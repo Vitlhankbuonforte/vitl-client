@@ -75,8 +75,8 @@
                 </td>
 
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="field-content"
-                    :data-index="index" data-field="DM_RM_POINTS">
-                    {{ Math.round(row.DM_RM_POINTS) }}</td>
+                    :data-index="index" data-field="PULSE_POINTS">
+                    {{ Math.round(row.PULSE_POINTS) }}</td>
 
                 <td :style="cellStyle(false, index)" class="field-content" :data-index="index" data-field="MONTH">
                     {{ row.MONTH }}</td>
@@ -91,8 +91,8 @@
             <thead v-if="total" type="footer">
                 <tr>
                     <th class="text-dark bg-light font-medium text-center" :frozen="true" colspan="2">Total</th>
-                    <th footerClass="text-dark bg-light font-medium" v-for="col of agColumns">
-                        {{ total[col.field] }}
+                    <th footerClass="text-dark bg-light font-medium" v-for="(col, index) of agColumns">
+                        {{ total[col.field] }}{{ index > 0 ? '%' : '' }}
                     </th>
                 </tr>
             </thead>
