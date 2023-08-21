@@ -3,7 +3,7 @@
         <Column bodyClass="text-left" headerClass="text-left text-dark bg-light font-medium" :frozen="true"
             :field="'REGION'" :header="'Region'">
             <template #body="slotProps">
-                <SmallBadge :id="slotProps.data['RM_REP_ID']" :text="slotProps.data['REGION']"
+                <SmallBadge :id="slotProps.data['RM_REP_ID'] || ''" :text="slotProps.data['REGION']"
                     v-tooltip="slotProps.data['REGION']" category="region" class="short-text"
                     :alt="slotProps.data['REGION'].split(' ').pop().substring(0, 2)" />
             </template>
@@ -17,9 +17,9 @@
         <template v-slot:body>
             <Column bodyClass="text-left" :frozen="true" :field="'REGION'">
                 <template #body="slotProps">
-                    <SmallBadge :id="slotProps.data['RM_REP_ID']" :text="slotProps.data['REGION']"
+                    <SmallBadge :id="slotProps.data['RM_REP_ID'] || ''" :text="slotProps.data['REGION']"
                         v-tooltip="slotProps.data['REGION']" category="region" class="short-text"
-                        :alt="slotProps.data['REGION'].split(' ').pop().substring(0, 2)" />
+                        :alt="slotProps.data['REGION']?.split(' ').pop().substring(0, 2) || ''" />
                 </template>
             </Column>
         </template>

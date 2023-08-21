@@ -2,9 +2,6 @@
     <div v-if="loading" class="flex h-30rem">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
-    <div v-else-if="pulseView">
-        <GridTable :columns="columns" />
-    </div>
     <div v-else class="relative">
         <DataTable stripedRows :resizable-columns="true" columnResizeMode="expand"
             class="w-full p-datatable-sm border-round" :scrollable="true" selectionMode="single" @rowSelect="onRowSelect"
@@ -72,39 +69,51 @@
                 </template>
             </Column>
             <slot name="body"></slot>
-            <Column v-for="col of columns" :key="col.field" :field="col.field" body-class="p-0">
+            <Column v-for="(col, index) of columns" :key="col.field" :field="col.field" body-class="p-0">
                 <template #body="slotProps">
-                    <div :class="`py-3 px-2 h-full ${highlight ? highlighted(col.field, slotProps.data[col.field]) : ''}`">
-                        {{ getValue(slotProps.data, col) }}
+                    <div :class="`py-3 px-2 h-full field-content ${highlight ? highlighted(col.field, slotProps.data[col.field]) : ''}`"
+                        :data-index="slotProps.index" :data-field="col.field">
+                        {{ slotProps.data[col.field] }}{{ index > 0 ? '%' : '' }}
                     </div>
                 </template>
             </Column>
+            <ColumnGroup v-if="total" type="footer">
+                <Row>
+                    <Column footerClass="text-dark bg-light font-medium" :frozen="true" footer="Total" :colspan="2"
+                        footerStyle="text-align:center;border-bottom-left-radius: 6px" />
+                    <Column footerClass="text-dark bg-light font-medium" v-for="col of columns" :footer="total[col.field]">
+                    </Column>
+                </Row>
+            </ColumnGroup>
         </DataTable>
+        <OverlayPanel ref="tooltip" append-to="body">
+            <TooltipContent :columns="columns" :block="lastBlock" :value="tValue" viewOption="Percentages" />
+        </OverlayPanel>
     </div>
 </template>
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { useMainStore } from "../store/mainStore";
 import { computed } from "vue";
+import { useMainStore } from "../store/mainStore";
+import { useTooltip } from '../composables/useTooltip'
 
 const store = useMainStore();
 const cols = store.percentageColumns;
-const { data, loading, highlight, pulseView, lastBlock } = storeToRefs(store);
+const { data, loading, highlight, lastBlock, total } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {
-    console.log(event);
     emit('rowSelect', event);
 };
 
 const highlighted = (field: any, item: any) => {
     const rules: any = {
         SALES_GOAL_P: 1,
-        DM_PERSONAL: 1,
+        PERSONAL_PRODUCTION_P: 1,
         SG_SALES_P: 0.3,
         PRR_P: 0.6,
         VAR: 0.25,
-        DM_PERSONAL_INSTALLS: 1,
+        PERSONAL_INSTALLS_P: 1,
         CLEAN_SALES_P: 1,
         RWS_P: 1,
         NET_PPW_TO_TARGET_P: 1,
@@ -114,30 +123,27 @@ const highlighted = (field: any, item: any) => {
 
 const columns = computed(() =>
     lastBlock.value === 'Rep' ?
-        cols.filter(col => !['DM_PERSONAL', 'DM_PERSONAL_INSTALLS'].includes(col.field)) :
+        cols.filter(col => !['PERSONAL_PRODUCTION_P', 'PERSONAL_INSTALLS_P'].includes(col.field)) :
         cols
 )
 
-const getValue = (row: any, col: any) => {
-    let v = +row[col.field] || 0;
-
-    if (col.field === 'POINTS') {
-        return v;
-    }
-    v = v * 100;
-
-    if (['SALES_GOAL_P', 'RWS_P'].includes(col.field)) {
-        v = parseFloat(v.toFixed(1));
-    } else {
-        v = Math.round(v);
-    }
-    return v + '%';
-}
+const { tooltip, tValue } = useTooltip({ columns: columns.value });
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 :deep(.p-datatable-wrapper) {
     padding-bottom: 8px;
+}
+
+.field-content {
+    border: 1px solid transparent;
+
+    &:hover {
+        border: 1px solid #ececec;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
 }
 </style>

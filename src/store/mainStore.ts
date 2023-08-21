@@ -28,6 +28,7 @@ export const useMainStore = defineStore("store", {
     sortItems: [] as any[],
     loading: false,
     allData: [] as any[],
+    total: null,
     viewOption: "Percentages",
     viewOptions: ["Percentages", "Numbers"],
     highlight: false,
@@ -49,11 +50,11 @@ export const useMainStore = defineStore("store", {
     percentageColumns: [
       { field: "POINTS", title: "Points" },
       { field: "SALES_GOAL_P", title: "Sales Goal" },
-      { field: "DM_PERSONAL", title: "DM Personal" },
+      { field: "PERSONAL_PRODUCTION_P", title: "DM Personal" },
       { field: "SG_SALES_P", title: "SG %", class: "border-right-1" },
       { field: "PRR_P", title: "PRR" },
       { field: "VAR_P", title: "VAR" },
-      { field: "DM_PERSONAL_INSTALLS", title: "DM Installs" },
+      { field: "PERSONAL_INSTALLS_P", title: "DM Installs" },
       { field: "CLEAN_SALES_P", title: "Clean %", class: "border-right-1" },
       { field: "RWS_P", title: "RWS %" },
       { field: "NET_PPW_TO_TARGET_P", title: "Net PPW to Target" },
@@ -86,18 +87,20 @@ export const useMainStore = defineStore("store", {
           state.selectedDMs.includes(x["DM_NAME"])
         );
       }
+
       if (state.sortBy) {
-        if (state.sortBy === "POINTS") {
+        if (state.sortBy === this.sortItems[0].field) {
           data = data.sort((a, b) => {
-            let diff = b["POINTS"] - a["POINTS"];
+            const field = this.percentageColumns[0].field;
+            let diff = b[field] - a[field];
 
             if (diff !== 0) {
-              return diff;
+              return diff > 0 ? 1 : -1;
             }
             diff = b["SALES_GOAL_P"] - a["SALES_GOAL_P"];
 
             if (diff !== 0) {
-              return diff;
+              return diff > 0 ? 1 : -1;
             }
             return b["RWS_P"] - a["RWS_P"] > 0 ? 1 : -1;
           });
@@ -116,7 +119,7 @@ export const useMainStore = defineStore("store", {
             return b["RWS"] - a["RWS"] > 0 ? 1 : -1;
           });
         }
-        data = data.sort((a, b) => -a[state.sortBy] + b[state.sortBy]);
+        data = data.sort((a, b) => b[state.sortBy] - a[state.sortBy]);
       }
       return data;
     },
@@ -135,6 +138,12 @@ export const useMainStore = defineStore("store", {
       this.filterActive = !this.filterActive;
     },
     resetSortBy() {
+      if (this.lastBlock === "Region" || this.lastBlock === "District") {
+        this.percentageColumns[0].field = "DM_RM_POINTS";
+      } else {
+        this.percentageColumns[0].field = "REP_POINTS";
+      }
+
       if (this.viewOption == "Numbers") {
         this.sortItems = this.numberColumns;
       } else {
@@ -162,15 +171,7 @@ export const useMainStore = defineStore("store", {
       if (!this.pulseView) {
         params.month = (this.month || [])
           .filter(Boolean)
-          .map(
-            (m) =>
-              `${
-                m.year +
-                "-" +
-                (m.month + 1 > 9 ? m.month + 1 : `0${m.month + 1}`) +
-                "-01"
-              }`
-          )
+          .map((m) => `${m.month + 1}/1/${m.year}`)
           .join(",");
       }
 
@@ -179,150 +180,40 @@ export const useMainStore = defineStore("store", {
       }
 
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/${this.pulseView ? "pulse" : "fetch"}`,
+        `${import.meta.env.VITE_API_URL}/${this.pulseView ? "pulse" : "data"}`,
         {
           params,
         }
       );
-      const allData = res.data;
-      this.allData = allData.map((x: any) => ({
-        ...x,
-        SALES_GOAL_P: x["GOAL"] ? x["SALES"] / x["GOAL"] : 0,
-        PERSONAL_PRODUCTION_P: x["PERSONAL_SALES_GOAL"]
-          ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
-          : 0,
-        DM_PERSONAL: x["PERSONAL_SALES_GOAL"]
-          ? x["PERSONAL_SALES"] / x["PERSONAL_SALES_GOAL"]
-          : 0,
-        SG_SALES_P: x["SALES"] ? x["SG_SALES"] / x["SALES"] : 0,
-        PRR_P: x["SALES"] ? x["PRR"] / x["SALES"] : 0,
-        VAR_P: x["SALES"] ? x["VIVINT_SALES"] / x["SALES"] : 0,
-        DM_PERSONAL_INSTALLS:
-          this.lastBlock === "Region"
-            ? x["PERSONAL_INSTALLS"] / x["PERSONAL_INSTALLS_GOAL"]
-            : x["PERSONAL_INSTALLS"]
-            ? x["PERSONAL_INSTALLS"] / 6
-            : 0,
-        CLEAN_SALES_P: x["SALES"] ? x["CLEAN_SALES"] / x["SALES"] : 0,
-        RWS_P: x["ACTIVE_REPS"] ? x["RWS"] / x["ACTIVE_REPS"] : 0,
-        NET_PPW_TO_TARGET_P: x["SUGGESTED_NET_PPW"]
-          ? x["NET_PPW"] / x["SUGGESTED_NET_PPW"]
-          : 0,
-      }));
 
-      for (let x of this.allData as any[]) {
-        let VAR_PERCENT = 0.25,
-          VAR_POINTS = 5,
-          RWS_POINTS = 10;
+      const allData: any[] = res.data.map((row: any) => {
+        row["ACTIVE_REPS"] = row["ACTIVE_REPS"] || row["ACTIVE_REPS_"] || 0;
+        row["RWS"] = row["RWS"] || row["RWS_"] || 0;
 
-        if (this.pulseView) {
-          x["DM_PERSONAL_INSTALLS"] =
-            x["PERSONAL_INSTALLS"] / x["PERSONAL_INSTALLS_GOAL"];
+        for (const col of this.percentageColumns) {
+          let v = +row[col.field] || 0;
+
+          if (col.field === this.percentageColumns[0].field) {
+            row[col.field] = Math.round(v);
+            continue;
+          }
+          v = v * 100;
+
+          if (["SALES_GOAL_P", "RWS_P"].includes(col.field)) {
+            v = parseFloat(v.toFixed(1));
+          } else {
+            v = Math.round(v);
+          }
+          row[col.field] = v;
         }
 
-        if (this.pulseView && x.MONTH > "2023-07-01") {
-          VAR_PERCENT = 0.8;
-          VAR_POINTS = 10;
-          RWS_POINTS = 15;
-          x["DM_PERSONAL_INSTALLS"] = 0;
+        for (const col of this.numberColumns) {
+          row[col.field] = Math.round(row[col.field] || 0);
         }
-
-        let points = 0;
-
-        if (this.lastBlock === "Rep") {
-          points += x["SALES_GOAL_P"] > 1 ? 35 : x["SALES_GOAL_P"] * 35;
-
-          points +=
-            x["SG_SALES"] >= 0.3
-              ? 5
-              : x["SG_SALES"] <= 0.1
-              ? 0
-              : x["SG_SALES"] * 5;
-
-          points +=
-            x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
-
-          points +=
-            x["VAR_P"] > VAR_PERCENT ? VAR_POINTS : x["VAR_P"] * VAR_POINTS;
-
-          points +=
-            x["CLEAN_SALES_P"] >= 1
-              ? 10
-              : x["CLEAN_SALES_P"] <= 0.6
-              ? 0
-              : x["CLEAN_SALES_P"] * 10;
-
-          points +=
-            x["DM_PERSONAL_INSTALLS"] >= 1
-              ? 10
-              : x["DM_PERSONAL_INSTALLS"] * 10;
-
-          points +=
-            x["RWS_P"] >= 1
-              ? RWS_POINTS
-              : x["RWS_P"] <= 0.6
-              ? 0
-              : x["RWS_P"] * RWS_POINTS;
-
-          points +=
-            x["NET_PPW_TO_TARGET_P"] >= 1
-              ? 5
-              : x["NET_PPW_TO_TARGET_P"] <= 0.8
-              ? 0
-              : x["NET_PPW_TO_TARGET_P"] * 5;
-        } else {
-          points +=
-            x["SALES_GOAL_P"] > 1
-              ? 35
-              : x["SALES_GOAL_P"] < 0.5
-              ? 0
-              : x["SALES_GOAL_P"] * 35;
-
-          points +=
-            x["PERSONAL_PRODUCTION_P"] >= 1
-              ? 10
-              : x["PERSONAL_PRODUCTION_P"] < 0.4
-              ? 0
-              : x["PERSONAL_PRODUCTION_P"] * 10;
-
-          points +=
-            x["SG_SALES_P"] >= 0.3
-              ? 5
-              : x["SG_SALES_P"] <= 0.1
-              ? 0
-              : x["SG_SALES_P"] * 5;
-
-          points +=
-            x["PRR_P"] >= 0.6 ? 10 : x["PRR_P"] <= 0.5 ? 0 : x["PRR_P"] * 10;
-
-          points +=
-            x["VAR_P"] > VAR_PERCENT ? VAR_POINTS : x["VAR_P"] * VAR_POINTS;
-
-          points +=
-            x["CLEAN_SALES_P"] >= 1
-              ? 10
-              : x["CLEAN_SALES_P"] <= 0.6
-              ? 0
-              : x["CLEAN_SALES_P"] * 10;
-
-          points +=
-            x["DM_PERSONAL_INSTALLS"] >= 1
-              ? 10
-              : x["DM_PERSONAL_INSTALLS"] < 1 / 3
-              ? 0
-              : x["DM_PERSONAL_INSTALLS"] * 10;
-
-          points += x["RWS_P"] >= 1 ? RWS_POINTS : x["RWS_P"] * RWS_POINTS;
-
-          points +=
-            x["NET_PPW_TO_TARGET_P"] >= 1
-              ? 5
-              : x["NET_PPW_TO_TARGET_P"] <= 0.8
-              ? 0
-              : x["NET_PPW_TO_TARGET_P"] * 5;
-        }
-        x["POINTS"] = this.pulseView ? points : Math.round(points);
-      }
+        return row;
+      });
+      this.total = allData.find((r) => r.BLOCK === "Total");
+      this.allData = allData.filter((r) => r.BLOCK !== "Total");
 
       this.allRegions = allData
         .map((x: any) => x["REGION"])
@@ -361,11 +252,6 @@ export const useMainStore = defineStore("store", {
 
 const generatePulseData = (data: any[], that: any) => {
   const r: any[] = [];
-  // const blockKey: any = {
-  //   District: "DISTRICT",
-  //   Region: "REGION",
-  //   Rep: "REP_ID",
-  // }[that.lastBlock as string];
   const blockKey = "DISTRICT";
   data = JSON.parse(JSON.stringify(data));
 
@@ -386,6 +272,7 @@ const generatePulseData = (data: any[], that: any) => {
       const newItem: any = {
         info: {
           [blockKey]: item[blockKey],
+          DM_NAME: item["DM_NAME"],
         },
         [item["MONTH"]]: item,
       };
@@ -397,7 +284,7 @@ const generatePulseData = (data: any[], that: any) => {
   }
 
   for (const item of r) {
-    item.info["POINTS"] = 0;
+    item.info["DM_RM_POINTS"] = 0;
     item.info["SALES"] = 0;
 
     for (const month of PULSE_MONTHS) {
@@ -407,15 +294,18 @@ const generatePulseData = (data: any[], that: any) => {
         };
         continue;
       }
-      item[month]["POINTS"] && (item.info["POINTS"] += item[month]["POINTS"]);
+      item[month]["DM_RM_POINTS"] &&
+        (item.info["DM_RM_POINTS"] += item[month]["DM_RM_POINTS"]);
       item[month]["SALES"] && (item.info["SALES"] += item[month]["SALES"]);
     }
     const currentMonth = new Date().getMonth() + 1;
     const avg = currentMonth > 6 ? currentMonth - 6 : 1;
-    item.info["POINTS"] = item.info["POINTS"] / avg;
+    item.info["DM_RM_POINTS"] = item.info["DM_RM_POINTS"] / avg;
   }
   that.viewOption === "Percentages"
-    ? r.sort((a, b) => (b.info["POINTS"] > a.info["POINTS"] ? 1 : -1))
+    ? r.sort((a, b) =>
+        b.info["DM_RM_POINTS"] > a.info["DM_RM_POINTS"] ? 1 : -1
+      )
     : r.sort((a, b) => (b.info["SALES"] > a.info["SALES"] ? 1 : -1));
 
   return [...Array(r.length * 3)].map((_, index) => {

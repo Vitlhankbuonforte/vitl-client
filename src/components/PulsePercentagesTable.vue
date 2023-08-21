@@ -1,10 +1,10 @@
 <template>
-    <div v-if="loading" class="p-4 flex h-30rem w-full">
+    <div v-if="loading" class="flex h-30rem w-full">
         <Skeleton width="100%" height="100%" borderRadius="16px"></Skeleton>
     </div>
     <div v-else style="width: 100%; overflow-x: auto;" class="pb-2">
         <table style="width: 100%;" class="pulse-grid">
-            <thead v-if="viewOption === 'Percentages'">
+            <thead>
                 <tr>
                     <th style="width:3rem;border:0;background:black!important;" header="" :rowspan="4" />
                     <th style="margin-left:-2px;border:0;background:black!important;" header="" :rowspan="4" />
@@ -56,7 +56,7 @@
                         {{ lastBlock }}
                     </th>
                     <th>
-                        {{ viewOption === 'Numbers' ? 'Sales' : 'Points' }}
+                        Points
                     </th>
                     <th>Month</th>
                     <th v-for="col in agColumns" :key="col.field" :class="(col as any).class">{{ col.title }}</th>
@@ -67,25 +67,39 @@
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="left-0 z-2">
                     {{ Math.floor(index / 3) + 1 }}
                 </td>
+
                 <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="z-2" style="left: 40px">
                     <SmallBadge :id="row['DM_REP_ID'] || ''" :text="row['DISTRICT']" category="team"
                         v-tooltip="row['DISTRICT']" class="short-text"
                         :alt="row['DISTRICT'].split(' ').pop().substring(0, 2)" />
                 </td>
-                <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="field-content">
-                    {{ Math.round(viewOption === 'Percentages' ? row.DM_RM_POINTS : row.SALES) }}</td>
-                <td :style="cellStyle(false, index)">
+
+                <td v-if="index % 3 === 0" :rowspan="3" :style="cellStyle(true, index)" class="field-content"
+                    :data-index="index" data-field="DM_RM_POINTS">
+                    {{ Math.round(row.DM_RM_POINTS) }}</td>
+
+                <td :style="cellStyle(false, index)" class="field-content" :data-index="index" data-field="MONTH">
                     {{ row.MONTH }}</td>
+
                 <td v-for="col in agColumns" :key="col.field" :style="cellStyle(false, index, row, col)"
                     class="field-content" :data-index="index" :data-field="col.field">
                     <div class="text-center">
-                        {{ row[col.field] || 0 }}{{ viewOption === 'Percentages' ? '%' : '' }}
+                        {{ row[col.field] || 0 }}%
                     </div>
                 </td>
             </tr>
+            <thead v-if="total" type="footer">
+                <tr>
+                    <th class="text-dark bg-light font-medium text-center" :frozen="true" colspan="2">Total</th>
+                    <th footerClass="text-dark bg-light font-medium" v-for="col of agColumns">
+                        {{ total[col.field] }}
+                    </th>
+                </tr>
+            </thead>
         </table>
         <OverlayPanel ref="tooltip" append-to="body">
-            <TooltipContent :columns="agColumns" :block="lastBlock" :value="tValue" :viewOption="viewOption" />
+            <TooltipContent :columns="agColumns" :block="lastBlock" :value="tValue" :viewOption="viewOption"
+                :pulse="true" />
         </OverlayPanel>
     </div>
 </template>
@@ -96,9 +110,9 @@ import { useMainStore } from "../store/mainStore";
 import { useTooltip } from '../composables/useTooltip'
 
 const store = useMainStore();
-const { pulseData: rows, loading, lastBlock, viewOption, highlight, numberColumns, percentageColumns } = storeToRefs(store);
+const { pulseData: rows, loading, lastBlock, viewOption, highlight, percentageColumns, total } = storeToRefs(store);
 
-const agColumns = computed(() => (viewOption.value === 'Percentages' ? percentageColumns.value : numberColumns.value).filter(c => c.field !== 'SALES' && c.field !== 'DM_RM_POINTS').map(c => ({
+const agColumns = computed(() => percentageColumns.value.filter(c => c.field !== 'DM_RM_POINTS').map(c => ({
     ...c,
 })));
 
@@ -115,7 +129,7 @@ const onMouseLeave = () => {
 const cellStyle = (span: boolean, index: number, row?: any, col?: any) => {
     const hovered = onHover(span, index);
 
-    if (viewOption.value === 'Percentages' && highlight.value && row && col && highlighted(col.field, row[col.field])) {
+    if (highlight.value && row && col && highlighted(col.field, row[col.field])) {
         return {
             background: hovered ? '#97ef1b33' : '#97ef1b',
             color: hovered ? 'white' : '#444'
@@ -147,7 +161,7 @@ const highlighted = (field: any, item: any) => {
     return rules[field] <= item ? 'bg-primary' : '';
 }
 
-const { tooltip, tValue } = useTooltip({ columns: agColumns.value, pulse: true });
+const { tooltip, tValue } = useTooltip({ columns: percentageColumns.value, pulse: true });
 </script>
 
 <style lang="scss">
