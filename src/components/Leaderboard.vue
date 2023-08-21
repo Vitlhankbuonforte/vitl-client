@@ -16,7 +16,7 @@
                 </div>
                 <div class="mt-3 xl:mt-0 xl:ml-2 xl:align-items-start flex flex-column align-items-center">
                     <div class="text-white text-sm lg:text-xl short-text">{{ lead.label }}</div>
-                    <div class="text-primary font-bold text-2xl lg:text-4xl">{{ lead[sortBy] }}</div>
+                    <div class="text-primary font-bold text-2xl lg:text-4xl">{{ pulseView ? Math.round(lead.PULSE_POINTS) : lead[sortBy] }}</div>
                 </div>
             </div>
         </div>
