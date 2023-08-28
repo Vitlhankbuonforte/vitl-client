@@ -55,8 +55,6 @@ const columns = computed(() =>
         cols
 )
 
-// const { tooltip, tValue } = useTooltip({ columns: columns.value });
-
 </script>
 
 <style scoped>
