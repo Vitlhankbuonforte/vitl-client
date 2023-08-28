@@ -129,7 +129,7 @@ const onMouseLeave = () => {
 const cellStyle = (span: boolean, index: number, row?: any, col?: any) => {
     const hovered = onHover(span, index);
 
-    if (highlight.value && row && col && highlighted(col.field, row[col.field])) {
+    if (highlight.value && row && col && highlighted(col.field, row)) {
         return {
             background: hovered ? '#97ef1b33' : '#97ef1b',
             color: hovered ? 'white' : '#444'
@@ -146,19 +146,8 @@ const onHover = (span: boolean, index: number) => {
 }
 
 
-const highlighted = (field: any, item: any) => {
-    const rules: any = {
-        SALES_GOAL_P: 1,
-        PERSONAL_PRODUCTION_P: 1,
-        SG_SALES_P: 0.3,
-        PRR_P: 0.6,
-        VAR: 0.25,
-        PERSONAL_INSTALLS_P: 1,
-        CLEAN_SALES_P: 1,
-        RWS_P: 1,
-        NET_PPW_TO_TARGET_P: 1,
-    }
-    return rules[field] <= item ? 'bg-primary' : '';
+const highlighted = (field: any, row: any) => {
+    return row[field.replace(/\_P$/, '_HIGHLIGHT')] ? 'bg-primary' : '';
 }
 
 const { tooltip, tValue } = useTooltip({ columns: percentageColumns.value, pulse: true });

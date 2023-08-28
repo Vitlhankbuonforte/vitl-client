@@ -71,7 +71,7 @@
             <slot name="body"></slot>
             <Column v-for="(col, index) of columns" :key="col.field" :field="col.field" body-class="p-0">
                 <template #body="slotProps">
-                    <div :class="`py-3 px-2 h-full field-content ${highlight ? highlighted(col.field, slotProps.data[col.field]) : ''}`"
+                    <div :class="`py-3 px-2 h-full field-content ${highlight ? highlighted(col.field, slotProps.data) : ''}`"
                         :data-index="slotProps.index" :data-field="col.field">
                         {{ slotProps.data[col.field] }}{{ index > 0 ? '%' : '' }}
                     </div>
@@ -107,19 +107,8 @@ const onRowSelect = (event: any) => {
     emit('rowSelect', event);
 };
 
-const highlighted = (field: any, item: any) => {
-    const rules: any = {
-        SALES_GOAL_P: 1,
-        PERSONAL_PRODUCTION_P: 1,
-        SG_SALES_P: 0.3,
-        PRR_P: 0.6,
-        VAR: 0.25,
-        PERSONAL_INSTALLS_P: 1,
-        CLEAN_SALES_P: 1,
-        RWS_P: 1,
-        NET_PPW_TO_TARGET_P: 1,
-    }
-    return rules[field] <= item ? 'bg-primary' : '';
+const highlighted = (field: any, row: any) => {
+    return row[field.replace(/\_P$/, '_HIGHLIGHT')] ? 'bg-primary' : '';
 }
 
 const columns = computed(() =>
