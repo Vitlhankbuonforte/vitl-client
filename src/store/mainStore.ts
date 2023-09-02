@@ -376,6 +376,8 @@ const generatePulseData = (data: any[], that: any) => {
     item.info["PULSE_POINTS"] = 0;
     item.info["SALES"] = 0;
 
+    let avg = 0;
+
     for (const month of PULSE_MONTHS) {
       if (!item[month]) {
         item[month] = {
@@ -386,9 +388,10 @@ const generatePulseData = (data: any[], that: any) => {
       item[month]["DM_RM_POINTS"] &&
         (item.info["PULSE_POINTS"] += item[month]["DM_RM_POINTS"]);
       item[month]["SALES"] && (item.info["SALES"] += item[month]["SALES"]);
+      avg += 1;
     }
-    const currentMonth = new Date().getMonth() + 1;
-    const avg = currentMonth > 6 ? currentMonth - 6 : 1;
+    // const currentMonth = new Date().getMonth() + 1;
+    // const avg = currentMonth > 6 ? currentMonth - 6 : 1;
     item.info["PULSE_POINTS"] = item.info["PULSE_POINTS"] / avg;
   }
   that.viewOption === "Percentages"
