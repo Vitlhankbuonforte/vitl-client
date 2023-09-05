@@ -49,6 +49,7 @@
     </div>
   </transition>
   <div class="flex mt-3 justify-content-end mx-2 lg:mx-4 mb-1 gap-1">
+    <RulesDefinitionsModal />
     <ToggleButton v-if="viewOption === 'Percentages'" v-model="highlight" on-label="Highlight" off-label="No Highlight"
       class="w-full md:w-10rem" />
     <ToggleButton v-if="lastBlock === 'District'" outlined class="w-full md:w-10rem" v-model="pulseView" on-label="Pulse View" off-label="Pulse View"></ToggleButton>
@@ -105,6 +106,7 @@ import { useMainStore } from "./store/mainStore";
 import { storeToRefs } from "pinia";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import RulesDefinitionsModal from "./components/RulesDefinitionsModal.vue";
 
 const store = useMainStore();
 

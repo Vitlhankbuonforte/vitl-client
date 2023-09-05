@@ -33,6 +33,7 @@ export const useMainStore = defineStore("store", {
     viewOptions: ["Percentages", "Numbers"],
     highlight: false,
     allPulseData: [] as any[],
+    showRules: false,
     numberColumns: [
       { field: "SALES", title: "Sales" },
       { field: "GOAL", title: "Goal" },

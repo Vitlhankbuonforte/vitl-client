@@ -57,8 +57,16 @@
                     <Column headerClass="text-dark bg-light font-medium" :frozen="true" header="#"
                         :pt="{ headerCell: { class: 'round' } }" headerStyle="border-top-left-radius: 6px" />
                     <slot name="header"></slot>
-                    <Column headerStyle="text-wrap:wrap;" v-for="col of columns" :key="col.field"
-                        :header-class="'text-dark bg-light font-medium ' + col.class || ''" :header="col.title">
+                    <Column v-for="(col, index) of  columns " :key="col.field"
+                        :header-class="'text-dark bg-light font-medium ' + col.class || ''" :header="col.title"
+                        :header-style="{ 'border-top-right-radius': index === columns.length - 1 ? '6px' : 0, 'text-wrap': 'wrap' }">
+                    </Column>
+                </Row>
+                <Row v-if="total">
+                    <Column header-class="text-dark bg-light font-medium" :frozen="true" header="Total" :colspan="2"
+                        header-style="text-align:center;" />
+                    <Column header-class="text-dark bg-light font-medium" v-for="( col, index ) of  columns "
+                        :header="total[col.field] + (index > 0 ? '%' : '')">
                     </Column>
                 </Row>
             </ColumnGroup>
@@ -69,7 +77,7 @@
                 </template>
             </Column>
             <slot name="body"></slot>
-            <Column v-for="(col, index) of columns" :key="col.field" :field="col.field" body-class="p-0">
+            <Column v-for="( col, index ) of  columns " :key="col.field" :field="col.field" body-class="p-0">
                 <template #body="slotProps">
                     <div :class="`py-3 px-2 h-full field-content ${highlight && index > 0 ? highlighted(col.field, slotProps.data) : ''}`"
                         :data-index="slotProps.index" :data-field="col.field">
@@ -77,15 +85,6 @@
                     </div>
                 </template>
             </Column>
-            <ColumnGroup v-if="total" type="footer">
-                <Row>
-                    <Column footerClass="text-dark bg-light font-medium" :frozen="true" footer="Total" :colspan="2"
-                        footerStyle="text-align:center;border-bottom-left-radius: 6px" />
-                    <Column footerClass="text-dark bg-light font-medium" v-for="(col, index) of columns"
-                        :footer="total[col.field] + (index > 0 ? '%' : '')">
-                    </Column>
-                </Row>
-            </ColumnGroup>
         </DataTable>
         <OverlayPanel ref="tooltip" append-to="body">
             <TooltipContent :columns="columns.slice(1)" :block="lastBlock" :value="tValue" viewOption="Percentages" />
@@ -135,5 +134,14 @@ const { tooltip, tValue } = useTooltip({ columns: columns.value });
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
     }
+}
+
+:deep(.p-datatable-thead tr:last-child th:last-child) {
+    border-top-right-radius: 0;
+}
+
+:deep(.p-datatable-thead tr:first-child th:last-child) {
+    border-top-right-radius: 6px;
+    overflow: hidden;
 }
 </style>

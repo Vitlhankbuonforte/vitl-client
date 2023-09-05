@@ -11,7 +11,7 @@
     </NumbersTable>
     <PercentagesTable class="p-2 lg:m-3" @rowSelect="onRowSelect" v-else>
         <template v-slot:header>
-            <Column headerClass="text-left text-dark bg-light font-medium" :frozen="true" :header="'Region'" :rowspan="5">
+            <Column headerClass="text-left text-dark bg-light font-medium" :frozen="true" :header="'Region'">
             </Column>
         </template>
         <template v-slot:body>

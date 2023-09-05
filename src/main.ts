@@ -31,6 +31,7 @@ import Button from "primevue/button";
 import Menu from "primevue/menu";
 import ToggleButton from "primevue/togglebutton";
 import OverlayPanel from "primevue/overlaypanel";
+import Dialog from 'primevue/dialog';
 
 const app = createApp(App);
 
@@ -53,6 +54,7 @@ app.component("Row", Row);
 app.component("Avatar", Avatar);
 app.component("ToggleButton", ToggleButton);
 app.component("OverlayPanel", OverlayPanel);
+app.component('Dialog', Dialog);
 
 app.component("SmallBadge", SmallBadge);
 app.component("Leaderboard", Leaderboard);

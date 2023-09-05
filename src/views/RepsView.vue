@@ -14,9 +14,7 @@
             </NumbersTable>
             <PercentagesTable class="p-2 lg:m-3" v-else>
                 <template v-slot:header>
-                    <Column headerClass="text-left text-dark bg-light font-medium" :frozen="true" :header="'Rep'"
-                        :rowspan="5">
-                    </Column>
+                    <Column headerClass="text-left text-dark bg-light font-medium" :frozen="true" :header="'Rep'" />
                 </template>
                 <template v-slot:body>
                     <Column bodyClass="text-left" :frozen="true" :field="'REP_NAME'">

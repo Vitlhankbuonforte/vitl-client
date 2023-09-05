@@ -22,7 +22,7 @@
             class="p-2 lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis" v-else>
             <template v-slot:header>
                 <Column headerClass="text-left text-dark bg-light font-medium" :headerStyle="'width:8%'" :frozen="true"
-                    :header="'District'" :rowspan="5"></Column>
+                    :header="'District'"></Column>
             </template>
             <template v-slot:body>
                 <Column bodyClass="text-left" :headerStyle="'width:8%'" :frozen="true" :field="'DISTRICT'">

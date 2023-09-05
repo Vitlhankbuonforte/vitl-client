@@ -10,7 +10,7 @@ export function useTooltip({
   pulse?: boolean;
 }) {
   const store = useMainStore();
-  const { data, pulseData } = storeToRefs(store);
+  const { data, pulseData, showRules } = storeToRefs(store);
 
   const tooltip = ref();
   const tValue = ref<any>(null);
@@ -41,6 +41,9 @@ export function useTooltip({
   };
 
   function handleMouseMove(e: MouseEvent) {
+    if (showRules.value) {
+      return;
+    }
     const { clientX, clientY } = e;
     const els = document.elementsFromPoint(clientX, clientY);
     const el = els.find((el) => (el as any).dataset.index);
