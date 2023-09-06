@@ -16,12 +16,16 @@ export const useMainStore = defineStore("store", {
     pulseView: false,
     allRegions: [] as string[],
     selectedRegions: [] as string[],
+    oldSelectedRegions: [] as string[],
     allChannels: [] as string[],
     selectedChannels: [] as string[],
+    oldSelectedChannels: [] as string[],
     allDistricts: [] as string[],
     selectedDistricts: [] as string[],
+    oldSelectedDistricts: [] as string[],
     allDMs: [] as string[],
     selectedDMs: [] as string[],
+    oldSelectedDMs: [] as string[],
     selectedProduction: "All Production",
     allProductions: [] as string[],
     sortBy: null as any,
@@ -29,6 +33,7 @@ export const useMainStore = defineStore("store", {
     loading: false,
     allData: [] as any[],
     total: null,
+    loadingTotal: true,
     viewOption: "Percentages",
     viewOptions: ["Percentages", "Numbers"],
     highlight: false,
@@ -152,6 +157,22 @@ export const useMainStore = defineStore("store", {
       }
       this.sortBy = this.sortItems[0].field;
     },
+    async loadTotal() {
+      if (this.pulseView) {
+        return;
+      }
+      this.loadingTotal = true;
+
+      const params = getFilterData(this);
+
+      params.total = true;
+
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/data`, {
+        params,
+      });
+      this.loadingTotal = false;
+      this.total = formatRow(res.data.total, this);
+    },
     async loadData(block = "") {
       if (!block) {
         block = this.lastBlock;
@@ -180,130 +201,18 @@ export const useMainStore = defineStore("store", {
         params.production = this.selectedProduction;
       }
 
-      const res = await axios.get(
+      const {
+        data: { rows, total },
+      } = await axios.get(
         `${import.meta.env.VITE_API_URL}/${this.pulseView ? "pulse" : "data"}`,
         {
           params,
         }
       );
 
-      const allData: any[] = res.data.map((row: any) => {
-        row["ACTIVE_REPS"] = row["ACTIVE_REPS"] || row["ACTIVE_REPS_"] || 0;
-        row["RWS"] = row["RWS"] || row["RWS_"] || 0;
-
-        // if (this.lastBlock === "Rep") {
-        //   row.SALES_GOAL_P_POINTS =
-        //     row.SALES_GOAL_P_POINTS > 1 ? 35 : row.SALES_GOAL_P_POINTS * 35;
-        //   row.SG_SALES_P_POINTS =
-        //     row.SG_SALES_P >= 0.3
-        //       ? 5
-        //       : row.SG_SALES_P <= 0.1
-        //       ? 0
-        //       : row.SG_SALES_P * 5;
-        //   row.PRR_P_POINTS =
-        //     row.PRR_P >= 0.6 ? 10 : row.PRR_P <= 0.5 ? 0 : row.PRR_P * 10;
-        //   row.VAR_P_POINTS = row.VAR_P > 0.8 ? 5 : row.VAR_P * 5;
-        //   row.PERSONAL_INSTALLS_P_POINTS =
-        //     row.PERSONAL_INSTALLS_P >= 1 ? 10 : row.PERSONAL_INSTALLS_P * 10;
-        //   row.RWS_P_POINTS =
-        //     row.RWS_P >= 1 ? 10 : row.RWS_P <= 0.6 ? 0 : row.RWS_P * 10;
-        //   row.NET_PPW_TO_TARGET_P_POINTS =
-        //     row.NET_PPW_TO_TARGET_P >= 1
-        //       ? 5
-        //       : row.NET_PPW_TO_TARGET_P <= 0.8
-        //       ? 0
-        //       : row.NET_PPW_TO_TARGET_P * 5;
-        // } else {
-        //   row.SALES_GOAL_P_POINTS =
-        //     row.SALES_GOAL_P_POINTS > 1
-        //       ? 35
-        //       : row.SALES_GOAL_P_POINTS < 5 / 10
-        //       ? 0
-        //       : row.SALES_GOAL_P_POINTS * 35;
-        //   row.PERSONAL_PRODUCTION_P_POINTS =
-        //     row.PERSONAL_PRODUCTION_P >= 1
-        //       ? 10
-        //       : row.PERSONAL_PRODUCTION_P < 4 / 10
-        //       ? 0
-        //       : row.PERSONAL_PRODUCTION_P * 10;
-        //   row.SG_SALES_P_POINTS =
-        //     row.SG_SALES_P >= 0.3
-        //       ? 5
-        //       : row.SG_SALES_P <= 0.1
-        //       ? 0
-        //       : row.SG_SALES_P * 5;
-        //   row.PRR_P_POINTS =
-        //     row.PRR_P >= 0.6 ? 10 : row.PRR_P <= 0.5 ? 0 : row.PRR_P * 10;
-
-        //   if (this.pulseView) {
-        //     if (row.MONTH > "2023-07-01") {
-        //       row.VAR_P_POINTS = row.VAR_P > 0.8 ? 10 : row.VAR_P * 10;
-        //     } else {
-        //       row.VAR_P_POINTS = row.VAR_P > 0.25 ? 5 : row.VAR_P * 5;
-        //     }
-        //   } else {
-        //     row.VAR_P_POINTS = row.VAR_P > 0.8 ? 5 : row.VAR_P * 5;
-        //   }
-
-        //   if (this.pulseView && row.MONTH > "2023-07-01") {
-        //     row.PERSONAL_INSTALLS_P_POINTS = 0;
-        //   } else {
-        //     row.PERSONAL_INSTALLS_P_POINTS =
-        //       row.PERSONAL_INSTALLS_P >= 1
-        //         ? 10
-        //         : row.PERSONAL_INSTALLS_P < 2 / 6
-        //         ? 0
-        //         : row.PERSONAL_INSTALLS_P * 10;
-        //   }
-        //   row.CLEAN_SALES_P_POINTS =
-        //     row.CLEAN_SALES_P >= 1
-        //       ? 10
-        //       : row.CLEAN_SALES_P <= 0.6
-        //       ? 0
-        //       : row.CLEAN_SALES_P * 10;
-
-        //   if (this.pulseView) {
-        //     if (row.MONTH > "2023-07-01") {
-        //       row.RWS_P_POINTS = row.RWS_P >= 1 ? 15 : row.RWS_P * 15;
-        //     } else {
-        //       row.RWS_P_POINTS = row.RWS_P >= 1 ? 10 : row.RWS_P * 10;
-        //     }
-        //   } else {
-        //     row.RWS_P_POINTS =
-        //       row.RWS_P >= 1 ? 10 : row.RWS_P <= 0.6 ? 0 : row.RWS_P * 10;
-        //   }
-        //   row.NET_PPW_TO_TARGET_P_POINTS =
-        //     row.NET_PPW_TO_TARGET_P >= 1
-        //       ? 5
-        //       : row.NET_PPW_TO_TARGET_P <= 0.8
-        //       ? 0
-        //       : row.NET_PPW_TO_TARGET_P * 5;
-        // }
-
-        for (const col of this.percentageColumns) {
-          let v = +row[col.field] || 0;
-
-          if (col.field === this.percentageColumns[0].field) {
-            row[col.field] = Math.round(v);
-            continue;
-          }
-          v = v * 100;
-
-          if (["SALES_GOAL_P", "RWS_P"].includes(col.field)) {
-            v = parseFloat(v.toFixed(1));
-          } else {
-            v = Math.round(v);
-          }
-          row[col.field] = v;
-        }
-
-        for (const col of this.numberColumns) {
-          row[col.field] = Math.round(row[col.field] || 0);
-        }
-        return row;
-      });
-      this.total = allData.find((r) => r.BLOCK === "Total");
-      this.allData = allData.filter((r) => r.BLOCK !== "Total");
+      this.total = formatRow(total, this);
+      const allData = rows.map((row: any) => formatRow(row, this));
+      this.allData = allData;
 
       this.allRegions = allData
         .map((x: any) => x["REGION"])
@@ -336,9 +245,71 @@ export const useMainStore = defineStore("store", {
             value && array.indexOf(value) === index
         );
       this.loading = false;
+      this.loadingTotal = false;
     },
   },
 });
+
+const formatRow = (row: any, state: any) => {
+  row["ACTIVE_REPS"] = row["ACTIVE_REPS"] || row["ACTIVE_REPS_"] || 0;
+  row["RWS"] = row["RWS"] || row["RWS_"] || 0;
+
+  for (const col of state.percentageColumns) {
+    let v = +row[col.field] || 0;
+
+    if (col.field === state.percentageColumns[0].field) {
+      row[col.field] = Math.round(v);
+      continue;
+    }
+    v = v * 100;
+
+    if (["SALES_GOAL_P", "RWS_P"].includes(col.field)) {
+      v = parseFloat(v.toFixed(1));
+    } else {
+      v = Math.round(v);
+    }
+    row[col.field] = v;
+  }
+
+  for (const col of state.numberColumns) {
+    row[col.field] = Math.round(row[col.field] || 0);
+  }
+  return row;
+};
+
+const getFilterData = (state: any) => {
+  const params: any = {
+    block: state.lastBlock,
+  };
+
+  if (!state.pulseView) {
+    params.month = (state.month || [])
+      .filter(Boolean)
+      .map((m: any) => `${m.month + 1}/1/${m.year}`)
+      .join(",");
+  }
+
+  if (state.selectedChannels) {
+    params.channel = state.selectedChannels.join(",");
+  }
+
+  if (state.selectedDMs) {
+    params.dms = state.selectedDMs.join(",");
+  }
+
+  if (state.selectedDistricts) {
+    params.district = state.selectedDistricts.join(",");
+  }
+
+  if (state.selectedRegions) {
+    params.region = state.selectedRegions.join(",");
+  }
+
+  if (state.selectedProduction && !state.pulseView) {
+    params.production = state.selectedProduction;
+  }
+  return params;
+};
 
 const generatePulseData = (data: any[], that: any) => {
   const r: any[] = [];

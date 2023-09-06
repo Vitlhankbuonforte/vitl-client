@@ -31,7 +31,8 @@ import Button from "primevue/button";
 import Menu from "primevue/menu";
 import ToggleButton from "primevue/togglebutton";
 import OverlayPanel from "primevue/overlaypanel";
-import Dialog from 'primevue/dialog';
+import Dialog from "primevue/dialog";
+import ProgressSpinner from "primevue/progressspinner";
 
 const app = createApp(App);
 
@@ -54,7 +55,8 @@ app.component("Row", Row);
 app.component("Avatar", Avatar);
 app.component("ToggleButton", ToggleButton);
 app.component("OverlayPanel", OverlayPanel);
-app.component('Dialog', Dialog);
+app.component("Dialog", Dialog);
+app.component("ProgressSpinner", ProgressSpinner);
 
 app.component("SmallBadge", SmallBadge);
 app.component("Leaderboard", Leaderboard);

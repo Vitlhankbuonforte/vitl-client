@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-column xl:flex-row align-items-stretch">
-        <Leaderboard class="m-2 lg:m-4 mb-0" />
+        <Leaderboard v-if="!loading" class="m-2 lg:m-4 mb-0" />
         <div v-if="pulseView" class="p-2 lg:m-3 flex-grow-1 white-space-nowrap overflow-hidden text-overflow-ellipsis">
             <PulseNumbersTable v-if="viewOption === 'Numbers'" />
             <PulsePercentagesTable v-else />
@@ -44,7 +44,7 @@ import router from "../router";
 import { useMainStore } from "../store/mainStore";
 
 const store = useMainStore()
-const { pulseView, viewOption } = storeToRefs(store)
+const { pulseView, viewOption, loading } = storeToRefs(store)
 
 store.resetFilter('District')
 store.loadData("District");

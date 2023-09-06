@@ -1,5 +1,5 @@
 <template>
-    <Button label="Rules & Definitions" outlined @click="showRules = true" />
+    <Button class="w-full md:w-12rem" label="Rules & Definitions" outlined @click="showRules = true" />
 
     <Dialog v-model:visible="showRules" modal header="VITL SIGNS" ref="rd">
         <div>

@@ -22,19 +22,26 @@
         </div>
         <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Regions</label>
-          <MultiSelect v-model="selectedRegions" :options="allRegions" placeholder="(All)" />
+          <MultiSelect v-model="selectedRegions" :options="allRegions" placeholder="(All)"
+            v-on:show="() => oldSelectedRegions = selectedRegions"
+            v-on:hide="() => loadTotal(selectedRegions, oldSelectedRegions)" />
         </div>
         <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Channels</label>
-          <MultiSelect v-model="selectedChannels" :options="allChannels" placeholder="(All)" />
+          <MultiSelect v-model="selectedChannels" :options="allChannels" placeholder="(All)"
+            v-on:show="() => oldSelectedChannels = selectedChannels"
+            v-on:hide="() => loadTotal(selectedChannels, oldSelectedChannels)" />
         </div>
         <div class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Districts</label>
-          <MultiSelect v-model="selectedDistricts" :options="allDistricts" placeholder="(All)" />
+          <MultiSelect v-model="selectedDistricts" :options="allDistricts" placeholder="(All)"
+            v-on:show="() => oldSelectedDistricts = selectedDistricts"
+            v-on:hide="() => loadTotal(selectedDistricts, oldSelectedDistricts)" />
         </div>
         <div class="w-2 p-2 bg-gray-100 border-round flex flex-column">
           <label class="text-gray-900 mb-1">DMs</label>
-          <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)" />
+          <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)"
+            v-on:show="() => oldSelectedDMs = selectedDMs" v-on:hide="() => loadTotal(selectedDMs, oldSelectedDMs)" />
         </div>
         <div v-if="!pulseView" class="w-2 p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Sort</label>
@@ -52,7 +59,8 @@
     <RulesDefinitionsModal />
     <ToggleButton v-if="viewOption === 'Percentages'" v-model="highlight" on-label="Highlight" off-label="No Highlight"
       class="w-full md:w-10rem" />
-    <ToggleButton v-if="lastBlock === 'District'" outlined class="w-full md:w-10rem" v-model="pulseView" on-label="Pulse View" off-label="Pulse View"></ToggleButton>
+    <ToggleButton v-if="lastBlock === 'District'" outlined class="w-full md:w-10rem" v-model="pulseView"
+      on-label="Pulse View" off-label="Pulse View"></ToggleButton>
   </div>
   <Sidebar v-model:visible="sidebarOpen">
     <template #header>
@@ -71,19 +79,26 @@
         </div>
         <div class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Regions</label>
-          <MultiSelect v-model="selectedRegions" :options="allRegions" placeholder="(All)" />
+          <MultiSelect v-model="selectedRegions" :options="allRegions" placeholder="(All)"
+            v-on:show="() => oldSelectedRegions = selectedRegions"
+            v-on:hide="() => loadTotal(selectedRegions, oldSelectedRegions)" />
         </div>
         <div class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Channels</label>
-          <MultiSelect v-model="selectedChannels" :options="allChannels" placeholder="(All)" />
+          <MultiSelect v-model="selectedChannels" :options="allChannels" placeholder="(All)"
+            v-on:show="() => oldSelectedChannels = selectedChannels"
+            v-on:hide="() => loadTotal(selectedChannels, oldSelectedChannels)" />
         </div>
         <div class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Districts</label>
-          <MultiSelect v-model="selectedDistricts" :options="allDistricts" placeholder="(All)" />
+          <MultiSelect v-model="selectedDistricts" :options="allDistricts" placeholder="(All)"
+            v-on:show="() => oldSelectedDistricts = selectedDistricts"
+            v-on:hide="() => loadTotal(selectedDistricts, oldSelectedDistricts)" />
         </div>
         <div class="p-2 bg-gray-100 border-round flex flex-column">
           <label class="text-gray-900 mb-1">DMs</label>
-          <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)" />
+          <MultiSelect v-model="selectedDMs" :options="allDMs" placeholder="(All)"
+            v-on:show="() => oldSelectedDMs = selectedDMs" v-on:hide="() => loadTotal(selectedDMs, oldSelectedDMs)" />
         </div>
         <div v-if="!pulseView" class="p-2 bg-gray-50 border-round flex flex-column">
           <label class="text-gray-900 mb-1">Sort</label>
@@ -130,6 +145,10 @@ const {
   pulseView,
   highlight,
   lastBlock,
+  oldSelectedRegions,
+  oldSelectedChannels,
+  oldSelectedDMs,
+  oldSelectedDistricts,
 } = storeToRefs(store);
 
 watch(viewOption, () => {
@@ -160,6 +179,13 @@ const blockLevels = [{
   label: 'Reps',
   to: '/reps',
 }];
+
+const loadTotal = (newValue: string[], oldValue: string[]) => {
+  if (newValue.join(',') === oldValue.join(',')) {
+    return;
+  }
+  store.loadTotal();
+}
 
 </script>
 

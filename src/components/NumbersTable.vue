@@ -15,10 +15,20 @@
                         :pt="{ headerCell: { class: 'round' } }" />
                 </Row>
                 <Row v-if="total">
-                    <Column header-class="text-dark bg-light font-medium" :frozen="true" header="Total" :colspan="2"
-                        header-style="text-align:center" />
-                    <Column header-class="text-dark bg-light font-medium" v-for="col of columns" :header="total[col.field]">
+                    <Column header-class="text-dark bg-light font-medium" :frozen="true" :colspan="2"
+                        header-style="text-align:center">
+                        <template #header>
+                            <div class="flex align-items-center gap-2">
+                                <span>
+                                    Total
+                                </span>
+                                <ProgressSpinner v-if="loadingTotal" style="width: 18px;height: 18px;" />
+                            </div>
+                        </template>
                     </Column>
+
+                    <Column header-class="text-dark bg-light font-medium" v-for="col of columns"
+                        :header="loadingTotal ? '-' : (total[col.field] || 0)" />
                 </Row>
             </ColumnGroup>
 
@@ -49,7 +59,7 @@ import { computed } from "vue";
 
 const store = useMainStore();
 const cols = store.numberColumns;
-const { data, loading, lastBlock, total } = storeToRefs(store);
+const { data, loading, lastBlock, total, loadingTotal } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {

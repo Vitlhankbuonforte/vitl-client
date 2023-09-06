@@ -63,11 +63,20 @@
                     </Column>
                 </Row>
                 <Row v-if="total">
-                    <Column header-class="text-dark bg-light font-medium" :frozen="true" header="Total" :colspan="2"
-                        header-style="text-align:center;" />
-                    <Column header-class="text-dark bg-light font-medium" v-for="( col, index ) of  columns "
-                        :header="total[col.field] + (index > 0 ? '%' : '')">
+                    <Column header-class="text-dark bg-light font-medium" :frozen="true" :colspan="2"
+                        header-style="text-align:center;">
+                        <template #header>
+                            <div class="flex align-items-center gap-2">
+                                <span>
+                                    Total
+                                </span>
+                                <ProgressSpinner v-if="loadingTotal" style="width: 18px;height: 18px;" />
+                            </div>
+                        </template>
                     </Column>
+
+                    <Column header-class="text-dark bg-light font-medium" v-for="( col, index ) of columns"
+                        :header="loadingTotal ? '-' : total[col.field] + (index > 0 ? '%' : '')" />
                 </Row>
             </ColumnGroup>
 
@@ -99,7 +108,7 @@ import { useTooltip } from '../composables/useTooltip'
 
 const store = useMainStore();
 const cols = store.percentageColumns;
-const { data, loading, highlight, lastBlock, total } = storeToRefs(store);
+const { data, loading, highlight, lastBlock, total, loadingTotal } = storeToRefs(store);
 
 const emit = defineEmits(['rowSelect']);
 const onRowSelect = (event: any) => {
