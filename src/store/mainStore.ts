@@ -210,7 +210,7 @@ export const useMainStore = defineStore("store", {
         }
       );
 
-      this.total = formatRow(total, this);
+      this.total = total ? formatRow(total, this) : null;
       const allData = rows.map((row: any) => formatRow(row, this));
       this.allData = allData;
 
