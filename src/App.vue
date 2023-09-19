@@ -144,7 +144,7 @@ const {
   viewOptions,
   pulseView,
   highlight,
-  lastBlock,
+  // lastBlock,
   oldSelectedRegions,
   oldSelectedChannels,
   oldSelectedDMs,
